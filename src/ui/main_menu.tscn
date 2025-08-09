@@ -1,10 +1,37 @@
 [gd_scene load_steps=6 format=3 uid="uid://bbnssv0o4f2j3"]
 
 [ext_resource type="Theme" uid="uid://ntqh6xyylbj0" path="res://assets/theme.tres" id="1_qkuje"]
-[ext_resource type="Script" uid="uid://cpa4mtd4pxc4v" path="res://src/ui/main_menu.gd" id="2_h03rr"]
 [ext_resource type="Texture2D" uid="uid://c47h65hmluixk" path="res://assets/duckclaw-bg.jpg" id="2_qoywa"]
 [ext_resource type="PackedScene" uid="uid://dcj1fdi7ipnil" path="res://src/ui/screens/title_screen.tscn" id="3_5mgu5"]
 [ext_resource type="PackedScene" uid="uid://dj3ng2wmtqap8" path="res://src/ui/screens/options_screen.tscn" id="4_h03rr"]
+
+[sub_resource type="GDScript" id="GDScript_5mgu5"]
+script/source = "extends Control
+
+@onready var start_scene: PackedScene = preload(\"res://src/game/test.tscn\")
+
+@onready var title_screen: Control = $TitleScreen
+@onready var options_screen: Control = $OptionsScreen
+
+func _change_screen(screen: Control):
+	# Disable all screens before turning on the target screen
+	title_screen.visible = false
+	options_screen.visible = false
+	
+	screen.visible = true
+
+func _on_continue_game():
+	get_tree().change_scene_to_packed(start_scene)
+
+func _on_open_options():
+	_change_screen(options_screen)
+
+func _on_exit_game():
+	get_tree().quit(0)
+
+func _on_close_options():
+	_change_screen(title_screen)
+"
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -14,7 +41,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_qkuje")
-script = ExtResource("2_h03rr")
+script = SubResource("GDScript_5mgu5")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -27,7 +54,6 @@ texture = ExtResource("2_qoywa")
 expand_mode = 3
 
 [node name="TitleScreen" parent="." instance=ExtResource("3_5mgu5")]
-visible = true
 layout_mode = 1
 
 [node name="OptionsScreen" parent="." instance=ExtResource("4_h03rr")]
