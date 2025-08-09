@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3 uid="uid://dcj1fdi7ipnil"]
+
+[ext_resource type="Theme" uid="uid://ntqh6xyylbj0" path="res://assets/theme.tres" id="1_lficp"]
+[ext_resource type="Script" uid="uid://djdpihnen1h8u" path="res://src/ui/screens/title_screen.gd" id="1_v0r0d"]
+
+[node name="TitleScreen" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_v0r0d")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_lficp")
+
+[node name="TitleLabel" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme = ExtResource("1_lficp")
+theme_type_variation = &"HeaderLarge"
+text = "Game Title"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme = ExtResource("1_lficp")
+theme_override_constants/separation = 12
+
+[node name="StartButton" type="Button" parent="MarginContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+theme = ExtResource("1_lficp")
+text = "Start"
+
+[node name="OptionsButton" type="Button" parent="MarginContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+theme = ExtResource("1_lficp")
+text = "Options"
+
+[node name="ExitButton" type="Button" parent="MarginContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+theme = ExtResource("1_lficp")
+text = "Exit
+"
+
+[connection signal="pressed" from="MarginContainer/ButtonsContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MarginContainer/ButtonsContainer/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="MarginContainer/ButtonsContainer/ExitButton" to="." method="_on_exit_button_pressed"]
