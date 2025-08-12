@@ -24,9 +24,10 @@ theme = ExtResource("1_8dcm6")
 
 [node name="OptionsContainer" type="TabContainer" parent="MarginContainer"]
 layout_mode = 2
-current_tab = 0
+current_tab = 3
 
 [node name="Graphics" type="TabBar" parent="MarginContainer/OptionsContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -97,18 +98,233 @@ popup/item_4/text = "1024x576"
 popup/item_4/id = 4
 popup/item_5/id = 5
 
+[node name="VSync" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer/VSync"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "VSync"
+vertical_alignment = 1
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer/VSync"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+alignment = 1
+
+[node name="Brightness" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer/Brightness"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Brightness"
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer/Brightness"]
+custom_minimum_size = Vector2(140, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 50.0
+
+[node name="Value" type="Label" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer/Brightness"]
+custom_minimum_size = Vector2(20, 40)
+layout_mode = 2
+text = "50%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FieldOfView" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer/FieldOfView"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Field of view"
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer/FieldOfView"]
+custom_minimum_size = Vector2(140, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 60.0
+max_value = 120.0
+value = 90.0
+
+[node name="Value" type="Label" parent="MarginContainer/OptionsContainer/Graphics/MarginContainer/FlowContainer/FieldOfView"]
+custom_minimum_size = Vector2(20, 40)
+layout_mode = 2
+text = "90"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Audio" type="TabBar" parent="MarginContainer/OptionsContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/OptionsContainer/Audio"]
+layout_mode = 0
+offset_right = 240.0
+offset_bottom = 160.0
+
+[node name="FlowContainer" type="FlowContainer" parent="MarginContainer/OptionsContainer/Audio/MarginContainer"]
+layout_mode = 2
+
+[node name="Master" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Audio/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Audio/MarginContainer/FlowContainer/Master"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Master"
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/OptionsContainer/Audio/MarginContainer/FlowContainer/Master"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 50.0
+
+[node name="Value" type="Label" parent="MarginContainer/OptionsContainer/Audio/MarginContainer/FlowContainer/Master"]
+custom_minimum_size = Vector2(20, 40)
+layout_mode = 2
+text = "50%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Subtitles" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Audio/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Audio/MarginContainer/FlowContainer/Subtitles"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Subtitles"
+vertical_alignment = 1
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/OptionsContainer/Audio/MarginContainer/FlowContainer/Subtitles"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+alignment = 1
 
 [node name="Gameplay" type="TabBar" parent="MarginContainer/OptionsContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/OptionsContainer/Gameplay"]
+layout_mode = 0
+offset_right = 240.0
+offset_bottom = 160.0
+
+[node name="FlowContainer" type="FlowContainer" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer"]
+layout_mode = 2
+
+[node name="Difficulty" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/Difficulty"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Difficulty"
+vertical_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/Difficulty"]
+custom_minimum_size = Vector2(230, 40)
+layout_mode = 2
+alignment = 1
+selected = 1
+item_count = 3
+popup/item_0/text = "Easy"
+popup/item_0/id = 0
+popup/item_1/text = "Normal"
+popup/item_1/id = 1
+popup/item_2/text = "Hard"
+popup/item_2/id = 2
+popup/item_2/disabled = true
+
+[node name="CameraSensitivity" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/CameraSensitivity"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Sensitivity"
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/CameraSensitivity"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 50.0
+
+[node name="Value" type="Label" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/CameraSensitivity"]
+custom_minimum_size = Vector2(20, 40)
+layout_mode = 2
+text = "50%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InvertX" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/InvertX"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Camera Invert X"
+vertical_alignment = 1
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/InvertX"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+alignment = 1
+
+[node name="InvertY" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Name" type="Label" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/InvertY"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Camera Invert Y"
+vertical_alignment = 1
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/OptionsContainer/Gameplay/MarginContainer/FlowContainer/InvertY"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+alignment = 1
+
 [node name="Controls" type="TabBar" parent="MarginContainer/OptionsContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
@@ -121,49 +337,41 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="ControlsColumns" type="HBoxContainer" parent="MarginContainer/OptionsContainer/Controls/MarginContainer"]
+[node name="FlowContainer" type="FlowContainer" parent="MarginContainer/OptionsContainer/Controls/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 240
+theme_override_constants/h_separation = 200
+theme_override_constants/v_separation = 20
+vertical = true
 
-[node name="ControlsColumn2" type="VBoxContainer" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 24
-
-[node name="RebindContainer" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns/ControlsColumn2" instance=ExtResource("2_ciqaw")]
+[node name="RebindContainer" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/FlowContainer" instance=ExtResource("2_ciqaw")]
 layout_mode = 2
 action = "Forward"
 
-[node name="RebindContainer3" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns/ControlsColumn2" instance=ExtResource("2_ciqaw")]
+[node name="RebindContainer3" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/FlowContainer" instance=ExtResource("2_ciqaw")]
 layout_mode = 2
 action = "Left"
 
-[node name="RebindContainer2" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns/ControlsColumn2" instance=ExtResource("2_ciqaw")]
+[node name="RebindContainer2" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/FlowContainer" instance=ExtResource("2_ciqaw")]
 layout_mode = 2
 action = "Backward"
 
-[node name="RebindContainer4" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns/ControlsColumn2" instance=ExtResource("2_ciqaw")]
+[node name="RebindContainer4" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/FlowContainer" instance=ExtResource("2_ciqaw")]
 layout_mode = 2
 action = "Right"
 
-[node name="RebindContainer5" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns/ControlsColumn2" instance=ExtResource("2_ciqaw")]
+[node name="RebindContainer5" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/FlowContainer" instance=ExtResource("2_ciqaw")]
 layout_mode = 2
 action = "Jump"
 
-[node name="RebindContainer6" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns/ControlsColumn2" instance=ExtResource("2_ciqaw")]
+[node name="RebindContainer6" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/FlowContainer" instance=ExtResource("2_ciqaw")]
 layout_mode = 2
 action = "Sprint"
 
-[node name="ControlsColumn1" type="VBoxContainer" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns"]
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_constants/separation = 24
-
-[node name="RebindContainer7" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns/ControlsColumn1" instance=ExtResource("2_ciqaw")]
+[node name="RebindContainer7" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/FlowContainer" instance=ExtResource("2_ciqaw")]
 layout_mode = 2
 action = "Dash"
 
-[node name="RebindContainer10" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/ControlsColumns/ControlsColumn1" instance=ExtResource("2_ciqaw")]
+[node name="RebindContainer10" parent="MarginContainer/OptionsContainer/Controls/MarginContainer/FlowContainer" instance=ExtResource("2_ciqaw")]
 layout_mode = 2
 action = "Activate"
 

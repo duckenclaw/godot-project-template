@@ -16,7 +16,7 @@ const CAMERA_LOOK_AHEAD = 100.0
 
 # References
 @onready var camera: Camera2D = $Camera
-@onready var coyote_timer: Timer
+@onready var coyote_timer: Timer = $CoyoteTimer
 
 # State variables
 var was_on_floor = false
@@ -42,10 +42,7 @@ func _physics_process(delta):
 
 func handle_gravity(delta):
 	# Add gravity only if not on floor or coyote time has expired
-	print("is on floor? " + str(is_on_floor()))
-	print("can coyote jump? " + str(can_coyote_jump))
 	if not is_on_floor() and not can_coyote_jump:
-		print("applying gravity: " + str(velocity.y))
 		velocity.y += gravity * delta
 
 func handle_jump():
@@ -65,7 +62,6 @@ func handle_jump():
 	
 	# Stop jump hold when button is released or moving downward
 	if Input.is_action_just_released("jump") or velocity.y >= 0:
-		print("!jump_held")
 		jump_held = false
 
 func handle_horizontal_movement(delta):

@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="doppler"
+config/name="godot-project-template"
+config/tags=PackedStringArray("2d")
 run/main_scene="uid://bbnssv0o4f2j3"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 run/max_fps=60
