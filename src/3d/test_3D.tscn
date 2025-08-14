@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://cl4nisuqrinr0"]
+
+[ext_resource type="PackedScene" uid="uid://de0d7oag4f7nv" path="res://src/3d/player_3d.tscn" id="1_ejecp"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1fhpf"]
+size = Vector3(25, 0.2, 25)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1fhpf"]
+size = Vector3(25, 0.2, 25)
+
+[sub_resource type="Environment" id="Environment_1fhpf"]
+
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_ejecp"]
+
+[sub_resource type="Compositor" id="Compositor_5cm31"]
+
+[node name="Test3d" type="Node3D"]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("BoxMesh_1fhpf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+shape = SubResource("BoxShape3D_1fhpf")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1fhpf")
+camera_attributes = SubResource("CameraAttributesPhysical_ejecp")
+compositor = SubResource("Compositor_5cm31")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -3)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.14644662, -0.8535533, 0.49999997, 0.49999997, 0.49999997, 0.70710677, -0.8535533, 0.14644662, 0.49999997, 0, 0, 0)
+
+[node name="Player3d" parent="." instance=ExtResource("1_ejecp")]

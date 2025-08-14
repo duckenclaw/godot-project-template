@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://5uhaowxeav6y"]
+[gd_scene load_steps=4 format=3 uid="uid://5uhaowxeav6y"]
 
-[ext_resource type="Script" uid="uid://bdmhxpgoka6ak" path="res://src/player/player.gd" id="1_4anbu"]
+[ext_resource type="Script" uid="uid://bdmhxpgoka6ak" path="res://src/2d/player/player.gd" id="1_4anbu"]
+[ext_resource type="Texture2D" uid="uid://d0n62d264ha7a" path="res://assets/duckclaw.png" id="2_dnult"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qnmj6"]
 radius = 30.0
@@ -8,6 +9,12 @@ height = 120.0
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_4anbu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -55)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("2_dnult")
+flip_h = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -60)

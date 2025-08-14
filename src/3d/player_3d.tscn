@@ -1,0 +1,67 @@
+[gd_scene load_steps=14 format=3 uid="uid://de0d7oag4f7nv"]
+
+[ext_resource type="Script" uid="uid://bd4o3yxnjgp1f" path="res://src/3d/player_3d.gd" id="1_uviay"]
+[ext_resource type="Script" uid="uid://b314boduvwxi5" path="res://src/3d/player_config.gd" id="2_4cdic"]
+[ext_resource type="Script" uid="uid://dgmcijwg6u2v3" path="res://src/3d/camera_controller.gd" id="2_camera"]
+[ext_resource type="Script" uid="uid://o5l7k7ne5nnc" path="res://src/3d/states/state_machine.gd" id="3_statemachine"]
+[ext_resource type="Script" uid="uid://dh2fal4fhrxs7" path="res://src/3d/states/idle_state.gd" id="4_idle"]
+[ext_resource type="Script" uid="uid://ceu45w7d1r5qa" path="res://src/3d/states/moving_state.gd" id="5_moving"]
+[ext_resource type="Script" uid="uid://c601vmra42qdh" path="res://src/3d/states/jumping_state.gd" id="6_jumping"]
+[ext_resource type="Script" uid="uid://6fflapqm3jif" path="res://src/3d/states/falling_state.gd" id="7_falling"]
+[ext_resource type="Script" uid="uid://bsqk4j0ai8dkn" path="res://src/3d/states/dashing_state.gd" id="8_dashing"]
+[ext_resource type="Script" uid="uid://bcvyr8j430mkn" path="res://src/3d/states/crouching_state.gd" id="9_crouching"]
+[ext_resource type="Script" uid="uid://bkdovu50qaie2" path="res://src/3d/states/wallrunning_state.gd" id="10_wallrunning"]
+
+[sub_resource type="Resource" id="Resource_lf55u"]
+script = ExtResource("2_4cdic")
+might = 3.0
+fortitude = 3.0
+motorics = 2.0
+starting_weight = 30.0
+metadata/_custom_type_script = "uid://b314boduvwxi5"
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3obeq"]
+
+[node name="Player3d" type="CharacterBody3D" groups=["player"]]
+script = ExtResource("1_uviay")
+player_config = SubResource("Resource_lf55u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_3obeq")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+script = ExtResource("2_camera")
+
+[node name="RayCast3D" type="RayCast3D" parent="CameraPivot"]
+target_position = Vector3(0, 0, -2.5)
+
+[node name="States" type="Node3D" parent="."]
+
+[node name="StateMachine" type="Node" parent="States"]
+script = ExtResource("3_statemachine")
+initial_state = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="States/StateMachine"]
+script = ExtResource("4_idle")
+
+[node name="MovingState" type="Node" parent="States/StateMachine"]
+script = ExtResource("5_moving")
+
+[node name="JumpingState" type="Node" parent="States/StateMachine"]
+script = ExtResource("6_jumping")
+
+[node name="FallingState" type="Node" parent="States/StateMachine"]
+script = ExtResource("7_falling")
+
+[node name="DashingState" type="Node" parent="States/StateMachine"]
+script = ExtResource("8_dashing")
+
+[node name="CrouchingState" type="Node" parent="States/StateMachine"]
+script = ExtResource("9_crouching")
+
+[node name="WallrunningState" type="Node" parent="States/StateMachine"]
+script = ExtResource("10_wallrunning")

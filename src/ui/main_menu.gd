@@ -1,6 +1,6 @@
 extends Control
 
-@onready var start_scene: PackedScene = preload("res://src/game/test.tscn")
+@onready var start_scene: PackedScene = preload("res://src/3d/test_3D.tscn")
 
 @onready var title_screen: Control = $TitleScreen
 @onready var options_screen: Control = $OptionsScreen
