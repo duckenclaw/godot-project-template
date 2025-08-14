@@ -6,7 +6,8 @@ class_name WallrunningState
 
 var wallrun_timer: float = 0.0
 var max_wallrun_time: float = 5.0
-var wallrun_speed: float = 12.0
+var wallrun_speed: float = 10.0
+var wallrun_speed_multiplier: float = 0.75
 var wall_normal: Vector3
 var wallrun_direction: Vector3
 
@@ -16,8 +17,12 @@ func enter():
 	
 	# TODO: Detect wall and calculate wall normal and run direction
 	# For now, use placeholder values
-	wall_normal = Vector3.RIGHT  # Placeholder
-	wallrun_direction = Vector3.FORWARD  # Placeholder
+	
+	wall_normal = player.get_wall_normal() 
+	print("Wall normal: ", wall_normal)
+	wallrun_direction = calculate_wallrun_direction()
+	print("Wallrun direction: ", wallrun_direction)
+	wallrun_speed = player.move_speed * wallrun_speed_multiplier
 	
 	# Add camera shake for wallrun start
 	if player and player.camera:
@@ -39,7 +44,7 @@ func physics_update(delta: float):
 	if player.can_jump():
 		# Jump away from wall
 		player.velocity.y = player.jump_velocity
-		var jump_away_velocity = wall_normal * 8.0  # Push away from wall
+		var jump_away_velocity = wall_normal * player.jump_velocity  # Push away from wall
 		player.set_horizontal_velocity(jump_away_velocity)
 		player.jump_buffer_time = 0
 		player.coyote_time = 0
@@ -59,9 +64,39 @@ func get_state_name() -> String:
 
 # TODO: Add wall detection functions
 func detect_wall() -> bool:
-	# Implementation needed for wall detection using raycasts
-	return false
+	print("Detecting walls: " + str(player.is_on_wall()))
+	return player.is_on_wall()
 
 func get_wall_normal() -> Vector3:
 	# Implementation needed to get wall surface normal
 	return Vector3.RIGHT
+
+func calculate_wallrun_direction() -> Vector3:
+	if not player:
+		return Vector3.FORWARD
+	
+	# Get the player's horizontal velocity (ignore Y component)
+	var horizontal_velocity = Vector3(player.velocity.x, 0, player.velocity.z)
+	
+	# If player has no horizontal velocity, use input direction
+	if horizontal_velocity.length() < 0.1:
+		horizontal_velocity = player.get_movement_input_direction()
+		if horizontal_velocity.length() < 0.1:
+			# Fallback: use camera forward direction
+			horizontal_velocity = -player.camera_pivot.global_transform.basis.z
+			horizontal_velocity.y = 0
+			horizontal_velocity = horizontal_velocity.normalized()
+	
+	# Calculate the direction parallel to the wall
+	# This is done by projecting the velocity onto the wall plane
+	# Wall plane is perpendicular to wall_normal
+	var wall_parallel_direction = horizontal_velocity - wall_normal * horizontal_velocity.dot(wall_normal)
+	wall_parallel_direction = wall_parallel_direction.normalized()
+	
+	# Ensure we're running forward along the wall (not backward)
+	# Check if the calculated direction aligns with the original movement intent
+	var original_direction = horizontal_velocity.normalized()
+	if wall_parallel_direction.dot(original_direction) < 0:
+		wall_parallel_direction = -wall_parallel_direction
+	
+	return wall_parallel_direction

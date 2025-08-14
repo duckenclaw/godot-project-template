@@ -20,6 +20,10 @@ func physics_update(delta: float):
 		# Apply additional upward force while holding jump
 		player.velocity.y += jump_hold_bonus * delta
 	
+	if player.is_on_wall_only():
+		transition_to("wallrunning")
+		return
+	
 	# Check if we're falling (reached peak of jump or released jump early)
 	if player.velocity.y <= 0:
 		transition_to("falling")
