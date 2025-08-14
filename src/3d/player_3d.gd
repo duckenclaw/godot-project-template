@@ -30,9 +30,9 @@ const FLOOR_SNAP_LENGTH: float = 0.1
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var camera: CameraController = $CameraPivot/Camera3D
-@onready var interaction_raycast: RayCast3D = $CameraPivot/RayCast3D
-@onready var states_node: Node3D = $States
+@onready var interaction_raycast: RayCast3D = $CameraPivot/Camera3D/RayCast3D
 @onready var state_machine: StateMachine = $States/StateMachine
+@onready var anim_player: AnimationPlayer = $AnimationPlayer
 
 func _ready():
 	# Add player to group for easy reference
@@ -45,7 +45,8 @@ func _ready():
 	print("Player initialized with config:")
 	print(player_config.get_stats_summary())
 
-func _physics_process(delta: float):
+func _physics_process(delta:
+float):
 	handle_gravity(delta)
 	handle_input()
 	handle_timers(delta)

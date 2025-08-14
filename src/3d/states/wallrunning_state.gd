@@ -5,7 +5,7 @@ class_name WallrunningState
 ## Note: This is a basic implementation that would need additional wall detection
 
 var wallrun_timer: float = 0.0
-var max_wallrun_time: float = 3.0
+var max_wallrun_time: float = 5.0
 var wallrun_speed: float = 12.0
 var wall_normal: Vector3
 var wallrun_direction: Vector3

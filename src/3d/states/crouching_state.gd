@@ -8,12 +8,13 @@ var is_crawling: bool = false
 
 func enter():
 	print("Entering Crouching state")
+	player.anim_player.play("crouch")
 	# TODO: Modify collision shape to be shorter when crouching
 	# This would require adjusting the CollisionShape3D height
 
 func exit():
-	# TODO: Restore collision shape to normal height
-	pass
+	print("Exiting Crouching state")
+	player.anim_player.play("uncrouch")
 
 func physics_update(delta: float):
 	# Check if we should stop crouching
