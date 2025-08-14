@@ -44,7 +44,7 @@ func physics_update(delta: float):
 	if player.can_jump():
 		# Jump away from wall
 		player.velocity.y = player.jump_velocity
-		var jump_away_velocity = wall_normal * player.jump_velocity  # Push away from wall
+		var jump_away_velocity = wall_normal * player.jump_velocity # Push away from wall
 		player.set_horizontal_velocity(jump_away_velocity)
 		player.jump_buffer_time = 0
 		player.coyote_time = 0
