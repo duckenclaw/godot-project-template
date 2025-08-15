@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="MeleeWeapon" load_steps=4 format=3 uid="uid://c7w14i1nrmd8s"]
+
+[ext_resource type="Texture2D" uid="uid://d0n62d264ha7a" path="res://assets/duckclaw.png" id="1_ok75k"]
+[ext_resource type="PackedScene" uid="uid://cd1iducxv7j4e" path="res://assets/models/Medieval Dagger PSX.glb" id="2_od8bs"]
+[ext_resource type="Script" uid="uid://cwo6bn7dnhy30" path="res://src/3d/equipment/melee_weapon.gd" id="3_oeorm"]
+
+[resource]
+script = ExtResource("3_oeorm")
+subcategory = "dagger"
+slash_damage = 4.0
+thrust_damage = 5.0
+damage_type = "kinetic"
+speed = 1.5
+item_name = "Iron Dagger"
+icon = ExtResource("1_ok75k")
+model_scene = ExtResource("2_od8bs")
+category = "melee"
+metadata/_custom_type_script = "uid://cwo6bn7dnhy30"

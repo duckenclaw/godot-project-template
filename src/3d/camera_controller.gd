@@ -7,7 +7,7 @@ class_name CameraController
 @export var mouse_sensitivity: float = 0.002
 @export var min_pitch: float = -89.0
 @export var max_pitch: float = 89.0
-@export var base_fov: float = 75.0
+@export var base_fov: float = 90.0
 
 @export_group("Walking Sway")
 @export var sway_enabled: bool = true

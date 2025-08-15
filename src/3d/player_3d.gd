@@ -1,8 +1,5 @@
 extends CharacterBody3D
 
-## Third-person character controller with node-based state machine
-## Handles movement, physics, and interactions
-
 @export var player_config: PlayerConfig = PlayerConfig.new()
 
 # Movement properties (calculated from player_config)
@@ -34,12 +31,22 @@ const FLOOR_SNAP_LENGTH: float = 0.1
 @onready var state_machine: StateMachine = $States/StateMachine
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 
+# Hand system for equipment
+@onready var left_hand: Hand = $CameraPivot/Camera3D/Hands/LeftHand
+@onready var right_hand: Hand = $CameraPivot/Camera3D/Hands/RightHand
+
+# Equipment inventory
+@export var available_items: Array[Item] = []
+
 func _ready():
 	# Add player to group for easy reference
 	add_to_group("player")
 	
 	# Calculate movement properties from config
 	update_movement_properties()
+	
+	# Initialize hand system
+	setup_hands()
 	
 	# Print config summary
 	print("Player initialized with config:")
@@ -88,6 +95,18 @@ func handle_input():
 	# Handle interaction
 	if Input.is_action_just_pressed("activate"):
 		try_interact()
+	
+	# Handle equipment
+	if Input.is_action_just_pressed("equip_1"):
+		equip_item_by_index(0, true)  # Equip first weapon to right hand
+	if Input.is_action_just_pressed("equip_2"):
+		equip_item_by_index(1, true)  # Equip second weapon to right hand
+	
+	# Handle attacks
+	if Input.is_action_just_pressed("attack"):
+		use_right_hand()  # Primary attack with right hand
+	if Input.is_action_just_pressed("attack_alternate"):
+		use_left_hand()   # Alternate attack with left hand
 	
 	# Handle escape
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -138,7 +157,8 @@ func get_movement_input_direction() -> Vector3:
 	return direction
 
 func can_jump() -> bool:
-	return (is_on_floor_buffered or coyote_time > 0) and jump_buffer_time > 0
+	return ((is_on_floor_buffered or coyote_time > 0) and jump_buffer_time > 0) or is_on_wall_only()
+	
 
 func request_jump():
 	if can_jump():
@@ -152,7 +172,7 @@ func request_jump():
 func request_dash():
 	if last_movement_direction != Vector3.ZERO:
 		dash_cooldown = DASH_COOLDOWN_DURATION
-		# States will handle the actual dash movement
+		# States handle the actual dash movement
 		return true
 	return false
 
@@ -179,7 +199,7 @@ func is_sprinting() -> bool:
 	return Input.is_action_pressed("sprint") and Input.is_action_pressed("forward") and is_on_floor()
 
 func is_crouching() -> bool:
-	return Input.is_action_pressed("crouch")  # Note: crouch action not defined in project.godot yet
+	return Input.is_action_pressed("crouch") 
 
 func get_horizontal_velocity() -> Vector3:
 	return Vector3(velocity.x, 0, velocity.z)
@@ -187,3 +207,94 @@ func get_horizontal_velocity() -> Vector3:
 func set_horizontal_velocity(horizontal_vel: Vector3):
 	velocity.x = horizontal_vel.x
 	velocity.z = horizontal_vel.z
+
+# EQUIPMENT SYSTEM
+func setup_hands():
+	if left_hand:
+		left_hand.hand_side = "left"
+		left_hand.is_dominant = false
+		left_hand.projectile_fired.connect(_on_projectile_fired)
+	if right_hand:
+		right_hand.hand_side = "right"
+		right_hand.is_dominant = true  # Right hand is dominant for two-handed weapons
+		right_hand.projectile_fired.connect(_on_projectile_fired)
+
+func equip_item_to_hand(item: Item, hand: Hand) -> bool:
+	print("Equipping" + item.get_display_name() + " to " + hand.hand_side + " hand.")
+	if not item or not hand:
+		return false
+	
+	# Check if it's a two-handed weapon
+	if item.is_two_handed:
+		# Unequip both hands first
+		if left_hand.has_item():
+			left_hand.unequip_item()
+		if right_hand.has_item():
+			right_hand.unequip_item()
+		
+		# Equip to dominant hand only
+		if right_hand.is_dominant:
+			return right_hand.equip_item(item)
+		else:
+			return left_hand.equip_item(item)
+	else:
+		# Single-handed weapon
+		return hand.equip_item(item)
+
+func equip_item_by_index(index: int, prefer_right_hand: bool = true) -> bool:
+	if index < 0 or index >= available_items.size():
+		print("Invalid item index: %d" % index)
+		return false
+	
+	var item = available_items[index]
+	var target_hand = right_hand if prefer_right_hand else left_hand
+	
+	# If preferred hand is occupied, try the other hand
+	if not target_hand.can_equip(item):
+		target_hand = left_hand if prefer_right_hand else right_hand
+	
+	return equip_item_to_hand(item, target_hand)
+
+func use_left_hand():
+	if left_hand and left_hand.can_perform_action():
+		left_hand.perform_action("primary")
+
+func use_right_hand():
+	if right_hand and right_hand.can_perform_action():
+		right_hand.perform_action("primary")
+
+func get_hands_status() -> String:
+	var status = []
+	if left_hand:
+		status.append(left_hand.get_status_text())
+	if right_hand:
+		status.append(right_hand.get_status_text())
+	return "\n".join(status)
+
+func _on_projectile_fired(projectile_scene: PackedScene, spawn_position: Vector3, direction: Vector3, projectile_data: Dictionary):
+	# Spawn the projectile in the world
+	if not projectile_scene:
+		print("No projectile scene provided")
+		return
+	
+	var projectile = projectile_scene.instantiate()
+	if not projectile:
+		print("Failed to instantiate projectile")
+		return
+	
+	# Add to the scene tree
+	get_tree().current_scene.add_child(projectile)
+	
+	# Set position
+	projectile.global_position = spawn_position
+	
+	# Initialize the projectile with data
+	if projectile.has_method("initialize"):
+		projectile.initialize(
+			projectile_data.get("damage", 10.0),
+			projectile_data.get("speed", 50.0),
+			direction,
+			projectile_data.get("shooter", self)
+		)
+	
+	print("Fired projectile from %s" % projectile_data.get("weapon_name", "unknown weapon"))

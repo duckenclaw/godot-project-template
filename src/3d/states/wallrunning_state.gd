@@ -24,6 +24,7 @@ func enter():
 	print("Wallrun direction: ", wallrun_direction)
 	wallrun_speed = player.move_speed * wallrun_speed_multiplier
 	
+	
 	# Add camera shake for wallrun start
 	if player and player.camera:
 		player.camera.add_camera_shake(0.1, 0.2)
@@ -41,18 +42,26 @@ func physics_update(delta: float):
 		return
 	
 	# Check for jump off wall
-	if player.can_jump():
+	if (player.can_jump() and Input.is_action_just_pressed("jump")) or !player.is_on_wall_only():
 		# Jump away from wall
 		player.velocity.y = player.jump_velocity
-		var jump_away_velocity = wall_normal * player.jump_velocity # Push away from wall
+		
+		# Calculate jump direction based on wall normal and camera direction
+		var camera_forward = -player.camera_pivot.global_transform.basis.z
+		camera_forward.y = 0  # Keep horizontal
+		camera_forward = camera_forward.normalized()
+		
+		# Blend wall normal with camera direction for more intuitive wall jumping
+		var wall_push = wall_normal * 0.6  # Push away from wall (60%)
+		var camera_influence = camera_forward * 0.4  # Follow camera direction (40%)
+		var jump_away_velocity = (wall_push + camera_influence).normalized() * player.move_speed * 1.2
+		
 		player.set_horizontal_velocity(jump_away_velocity)
 		player.jump_buffer_time = 0
 		player.coyote_time = 0
 		transition_to("jumping")
 		return
 	
-	# TODO: Implement proper wall detection and movement
-	# For now, just maintain forward movement
 	var wallrun_velocity = wallrun_direction * wallrun_speed
 	player.set_horizontal_velocity(wallrun_velocity)
 	
@@ -61,15 +70,6 @@ func physics_update(delta: float):
 
 func get_state_name() -> String:
 	return "wallrunning"
-
-# TODO: Add wall detection functions
-func detect_wall() -> bool:
-	print("Detecting walls: " + str(player.is_on_wall()))
-	return player.is_on_wall()
-
-func get_wall_normal() -> Vector3:
-	# Implementation needed to get wall surface normal
-	return Vector3.RIGHT
 
 func calculate_wallrun_direction() -> Vector3:
 	if not player:
