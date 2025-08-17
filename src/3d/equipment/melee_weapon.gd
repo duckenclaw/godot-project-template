@@ -7,7 +7,7 @@ class_name MeleeWeapon
 @export var subcategory: String = ""
 @export var slash_damage: float = 0.0
 @export var thrust_damage: float = 0.0
-@export var damage_type: String = "physical"
+@export var damage_type: String = "kinetic"
 @export var weapon_range: String = "short"  # Using weapon_range instead of range (reserved keyword)
 @export var speed: float = 1.0
 

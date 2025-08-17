@@ -8,6 +8,7 @@ class_name PlayerConfig
 @export var might: float = 10.0
 @export var fortitude: float = 10.0  
 @export var motorics: float = 10.0
+@export var willpower: float = 10.0
 @export var starting_weight: float = 70.0
 
 # Calculated properties
@@ -30,6 +31,14 @@ var dash_length: float:
 var sprint_multiplier: float:
 	get:
 		return 1 + (motorics * 0.25)
+
+var max_health: float:
+	get:
+		return 35 + (5 * fortitude)
+
+var max_mana: float:
+	get:
+		return 25 + (5 * willpower)
 
 func _init(p_might: float = 10.0, p_fortitude: float = 10.0, p_motorics: float = 10.0, p_starting_weight: float = 70.0):
 	might = p_might

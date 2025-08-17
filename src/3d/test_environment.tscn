@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://bq2qhvw7cg4qj"]
+[gd_scene load_steps=5 format=3 uid="uid://dyas0vhtlslif"]
 
-[ext_resource type="PackedScene" uid="uid://de0d7oag4f7nv" path="res://src/3d/player_3d.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://cst7vo0ldo7e8" path="res://src/3d/player/player_3d.tscn" id="1_player"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 1, 20)
@@ -30,7 +30,6 @@ mesh = SubResource("BoxMesh_floor")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
-light_energy = 1.0
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

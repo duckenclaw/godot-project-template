@@ -1,0 +1,11 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://b3ql5ekwvpoqt"]
+
+[ext_resource type="FontFile" uid="uid://ev1qvknhaiu7" path="res://assets/PixeloidMono.ttf" id="1_sdues"]
+
+[resource]
+default_font = ExtResource("1_sdues")
+MarginContainer/constants/margin_bottom = 60
+MarginContainer/constants/margin_left = 80
+MarginContainer/constants/margin_right = 60
+MarginContainer/constants/margin_top = 80
+VBoxContainer/constants/separation = 0

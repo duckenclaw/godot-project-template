@@ -1,6 +1,7 @@
 extends Control
 
-@onready var start_scene: PackedScene = preload("res://src/2d/game/test_2D.tscn")
+@onready var start_scene_2d: PackedScene = preload("res://src/2d/game/test_2D.tscn")
+@onready var start_scene_3d: PackedScene = preload("res://src/3d/test_3D.tscn")
 
 @onready var title_screen: Control = $TitleScreen
 @onready var options_screen: Control = $OptionsScreen
@@ -12,7 +13,12 @@ func _change_screen(screen: Control):
 	
 	screen.visible = true
 
-func _on_continue_game():
+func _on_continue_game(type: String):
+	var start_scene
+	if type == "2D":
+		start_scene = start_scene_2d
+	elif type == "3D":
+		start_scene = start_scene_3d
 	get_tree().change_scene_to_packed(start_scene)
 
 func _on_open_options():
