@@ -26,7 +26,7 @@ var jump_height: float:
 
 var dash_length: float:
 	get:
-		return motorics / 10
+		return motorics / 20
 
 var sprint_multiplier: float:
 	get:

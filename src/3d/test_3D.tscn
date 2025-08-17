@@ -1,14 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://cl4nisuqrinr0"]
+[gd_scene load_steps=11 format=3 uid="uid://cl4nisuqrinr0"]
 
 [ext_resource type="PackedScene" uid="uid://cst7vo0ldo7e8" path="res://src/3d/player/player_3d.tscn" id="1_ejecp"]
-
-[sub_resource type="Environment" id="Environment_1fhpf"]
-background_mode = 1
-background_color = Color(0.21181104, 0.56919724, 0.9082838, 1)
-
-[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_ejecp"]
-
-[sub_resource type="Compositor" id="Compositor_5cm31"]
+[ext_resource type="PackedScene" uid="uid://bc6g7jvnoivix" path="res://src/3d/objects/dummy.tscn" id="1_hj5uv"]
+[ext_resource type="PackedScene" uid="uid://mx6n61adbbrq" path="res://src/3d/objects/door.tscn" id="2_igrfc"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_1fhpf"]
 size = Vector3(25, 0.2, 25)
@@ -22,20 +16,15 @@ size = Vector3(7.5, 5, 0.5)
 [sub_resource type="BoxMesh" id="BoxMesh_5cm31"]
 size = Vector3(7.5, 5, 0.5)
 
+[sub_resource type="Environment" id="Environment_1fhpf"]
+background_mode = 1
+background_color = Color(0.21181104, 0.56919724, 0.9082838, 1)
+
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_ejecp"]
+
+[sub_resource type="Compositor" id="Compositor_5cm31"]
+
 [node name="Test3d" type="Node3D"]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_1fhpf")
-camera_attributes = SubResource("CameraAttributesPhysical_ejecp")
-compositor = SubResource("Compositor_5cm31")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="WorldEnvironment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -3)
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(0.14644662, -0.8535533, 0.49999997, 0.49999997, 0.49999997, 0.70710677, -0.8535533, 0.14644662, 0.49999997, 0, 0, 0)
-
-[node name="Player3d" parent="." instance=ExtResource("1_ejecp")]
 
 [node name="Objects" type="Node3D" parent="."]
 
@@ -59,3 +48,22 @@ shape = SubResource("BoxShape3D_ejecp")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 mesh = SubResource("BoxMesh_5cm31")
+
+[node name="Dummy" parent="Objects" instance=ExtResource("1_hj5uv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6, 0, 0)
+
+[node name="Door" parent="Objects" instance=ExtResource("2_igrfc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1fhpf")
+camera_attributes = SubResource("CameraAttributesPhysical_ejecp")
+compositor = SubResource("Compositor_5cm31")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -3)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.14644662, -0.8535533, 0.49999997, 0.49999997, 0.49999997, 0.70710677, -0.8535533, 0.14644662, 0.49999997, 0, 0, 0)
+
+[node name="Player3d" parent="." instance=ExtResource("1_ejecp")]

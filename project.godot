@@ -25,6 +25,8 @@ window/size/viewport_height=900
 [global_group]
 
 player=""
+enemy=""
+interactable=""
 
 [input]
 

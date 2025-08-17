@@ -5,7 +5,7 @@ class_name DashingState
 
 var dash_timer: float = 0.0
 var dash_direction: Vector3
-var dash_speed: float = 20.0
+var dash_speed: float = 10.0
 
 func enter():
 	print("Entering Dashing state")

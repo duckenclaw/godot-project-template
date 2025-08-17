@@ -7,7 +7,6 @@ class_name Item
 @export var item_name: String = ""
 @export var icon: Texture2D
 @export var model_scene: PackedScene  # Changed from Mesh to PackedScene for .glb files
-@export var model_mesh: Mesh  # Optional: for simple mesh-only items
 @export var category: String = ""
 @export var weight: float = 0.0
 @export var size: Vector2i = Vector2i(1, 1)
@@ -28,7 +27,6 @@ func _init(
 	item_name = p_name
 	icon = p_icon
 	model_scene = p_model_scene
-	model_mesh = p_model_mesh
 	category = p_category
 	weight = p_weight
 	size = p_size
@@ -59,20 +57,5 @@ func get_info_text() -> String:
 		info.append("Description: " + description)
 	return "\n".join(info)
 
-func has_model() -> bool:
-	return model_scene != null or model_mesh != null
-
 func is_scene_model() -> bool:
 	return model_scene != null
-
-func is_mesh_model() -> bool:
-	return model_mesh != null
-
-func get_model_for_display():
-	# Returns the appropriate model for display
-	if model_scene:
-		return model_scene
-	elif model_mesh:
-		return model_mesh
-	else:
-		return null

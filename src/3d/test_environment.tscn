@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dyas0vhtlslif"]
+[gd_scene load_steps=7 format=3 uid="uid://dyas0vhtlslif"]
 
 [ext_resource type="PackedScene" uid="uid://cst7vo0ldo7e8" path="res://src/3d/player/player_3d.tscn" id="1_player"]
+[ext_resource type="Environment" uid="uid://dllxkp6le8ik" path="res://assets/test_environment.tres" id="2_l3aun"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 1, 20)
@@ -8,12 +9,11 @@ size = Vector3(20, 1, 20)
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 size = Vector3(20, 1, 20)
 
-[sub_resource type="Environment" id="Environment_1"]
-background_mode = 1
-background_color = Color(0.4, 0.6, 0.9, 1)
-ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.3
+[sub_resource type="BoxShape3D" id="BoxShape3D_n5jjm"]
+size = Vector3(10, 5, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_l3aun"]
+size = Vector3(10, 5, 0.5)
 
 [node name="TestEnvironment" type="Node3D"]
 
@@ -28,9 +28,20 @@ shape = SubResource("BoxShape3D_floor")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
 mesh = SubResource("BoxMesh_floor")
 
+[node name="Wall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("BoxShape3D_n5jjm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+mesh = SubResource("BoxMesh_l3aun")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_1")
+environment = ExtResource("2_l3aun")
