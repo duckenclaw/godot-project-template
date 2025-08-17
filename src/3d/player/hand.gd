@@ -95,26 +95,15 @@ func perform_primary_action() -> bool:
 	
 	match equipped_item.category:
 		"melee":
-			return perform_melee_attack()
+			# Set cooldown based on weapon speed
+			action_cooldown = 1.0 / equipped_item.speed
+			is_busy = true
+			
+			anim_player.play(equipped_item.attack_animations.pick_random())
+			return true
 		_:
 			print("Unknown item category for action: ", equipped_item.category)
 			return false
-
-func perform_melee_attack() -> bool:
-	var melee_weapon = equipped_item as MeleeWeapon
-	if not melee_weapon:
-		return false
-	
-	# Set cooldown based on weapon speed
-	action_cooldown = 1.0 / melee_weapon.speed
-	is_busy = true
-	
-	# TODO: Play animation "attack"
-	var attack = ["slash_right", "slash_left", "thrust"].pick_random()
-	anim_player.play(attack)
-	print("Performing melee attack with %s (damage: %.1f)" % [melee_weapon.get_display_name(), melee_weapon.get_max_damage()])
-	
-	return true
 
 func update_visual():
 	# Clear any existing visuals first

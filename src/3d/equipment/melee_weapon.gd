@@ -11,6 +11,8 @@ class_name MeleeWeapon
 @export var weapon_range: String = "short"  # Using weapon_range instead of range (reserved keyword)
 @export var speed: float = 1.0
 
+var attack_animations = ["slash_right", "slash_left", "thrust"]
+
 func _init(
 	p_name: String = "",
 	p_icon: Texture2D = null,

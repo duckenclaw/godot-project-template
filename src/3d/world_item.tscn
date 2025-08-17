@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://b1wplr4gqf8fd"]
+
+[ext_resource type="Script" uid="uid://dob60cymxa6jn" path="res://src/3d/equipment/item.gd" id="1_k28tc"]
+[ext_resource type="Texture2D" uid="uid://bdqc1yc4gxwtw" path="res://icon.png" id="2_j6h8t"]
+[ext_resource type="PackedScene" uid="uid://cvbl70xycxx74" path="res://assets/models/malorian.glb" id="3_20roa"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k28tc"]
+
+[node name="WorldItem" type="RigidBody3D"]
+script = ExtResource("1_k28tc")
+item_name = "World Item"
+icon = ExtResource("2_j6h8t")
+model_scene = ExtResource("3_20roa")
+category = "ranged"
+weight = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_k28tc")

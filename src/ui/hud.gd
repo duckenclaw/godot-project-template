@@ -24,5 +24,6 @@ func update_equipped_item(item: Item):
 	if !item:
 		equipped_item_icon.texture = null
 		equipped_item_label.text = "No item"
+		return
 	equipped_item_icon.texture = item.icon
 	equipped_item_label.text = item.get_display_name()
