@@ -35,17 +35,19 @@ const FLOOR_SNAP_LENGTH: float = 0.1
 @onready var state_machine: StateMachine = $States/StateMachine
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var hud: Control = $UI/HUD
+@onready var pause_menu: Control = $UI/PauseMenu
 @onready var hands: Node3D = $CameraPivot/Camera3D/Hands
 
 # Equipment inventory
 @export var available_items: Array[Item] = []
 
 func _ready():
-	# Add player to group for easy reference
-	add_to_group("player")
-	
 	# Calculate movement properties from config
 	update_stats()
+	
+	# Set player reference in pause menu
+	if pause_menu:
+		pause_menu.player = self
 	
 	# Print config summary
 	print("Player initialized with config:")
@@ -107,9 +109,9 @@ func handle_input():
 	if Input.is_action_just_pressed("attack_alternate"):
 		hands.use_left_hand()   # Alternate attack with left hand
 	
-	# Handle escape
+	# Handle escape / pause menu
 	if Input.is_action_just_pressed("ui_cancel"):
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		toggle_pause_menu()
 
 func handle_timers(delta: float):
 	# Coyote time
@@ -213,3 +215,24 @@ func get_horizontal_velocity() -> Vector3:
 func set_horizontal_velocity(horizontal_vel: Vector3):
 	velocity.x = horizontal_vel.x
 	velocity.z = horizontal_vel.z
+
+func toggle_pause_menu():
+	var is_paused = get_tree().paused
+	
+	if is_paused:
+		# Resume game
+		resume_game()
+	else:
+		# Pause game
+		pause_game()
+
+func pause_game():
+	get_tree().paused = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	pause_menu.visible = true
+	pause_menu.grab_focus()
+
+func resume_game():
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	pause_menu.visible = false

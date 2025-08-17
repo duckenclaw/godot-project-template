@@ -124,7 +124,7 @@ func update_visual():
 	# Clear any existing visuals first
 	clear_visual()
 	
-	if not equipped_item or not equipped_item.has_model():
+	if not equipped_item:
 		return
 		
 	# Handle PackedScene (.glb files)
