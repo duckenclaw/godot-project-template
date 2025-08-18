@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cl4nisuqrinr0"]
+[gd_scene load_steps=16 format=3 uid="uid://cl4nisuqrinr0"]
 
 [ext_resource type="PackedScene" uid="uid://bdp7yjeelx35w" path="res://src/3d/objects/upper_floor.tscn" id="1_4chky"]
 [ext_resource type="PackedScene" uid="uid://cst7vo0ldo7e8" path="res://src/3d/player/player_3d.tscn" id="1_ejecp"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://mx6n61adbbrq" path="res://src/3d/objects/door.tscn" id="2_igrfc"]
 [ext_resource type="PackedScene" uid="uid://bu6xqlb3th4wk" path="res://src/3d/objects/wall.tscn" id="2_tkq6y"]
 [ext_resource type="PackedScene" uid="uid://ckxpufbpphq1d" path="res://src/3d/objects/ramp.tscn" id="3_sey51"]
+[ext_resource type="Script" uid="uid://boh1ntsrwauty" path="res://src/3d/neutral.gd" id="7_tkq6y"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_1fhpf"]
 size = Vector3(25, 0.2, 25)
@@ -20,6 +21,14 @@ background_color = Color(0.21181104, 0.56919724, 0.9082838, 1)
 [sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_ejecp"]
 
 [sub_resource type="Compositor" id="Compositor_5cm31"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4chky"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4chky"]
+albedo_color = Color(0.09293146, 0.79128015, 7.70092e-07, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4chky"]
+material = SubResource("StandardMaterial3D_4chky")
 
 [node name="Test3d" type="Node3D"]
 
@@ -71,3 +80,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -3)
 transform = Transform3D(0.14644662, -0.8535533, 0.49999997, 0.49999997, 0.49999997, 0.70710677, -0.8535533, 0.14644662, 0.49999997, 0, 0, 0)
 
 [node name="Player3d" parent="." instance=ExtResource("1_ejecp")]
+
+[node name="Neutral" type="CharacterBody3D" parent="." groups=["character"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6926365, 0, 4.3090053)
+script = ExtResource("7_tkq6y")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Neutral"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_4chky")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Neutral"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_4chky")

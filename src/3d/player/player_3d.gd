@@ -19,6 +19,7 @@ var is_on_floor_buffered: bool = false
 var coyote_time: float = 0.0
 var jump_buffer_time: float = 0.0
 var dash_cooldown: float = 0.0
+var in_dialogue: bool = false
 
 # Constants
 const GRAVITY: float = 9.8
@@ -36,6 +37,7 @@ const FLOOR_SNAP_LENGTH: float = 0.1
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var hud: Control = $UI/HUD
 @onready var pause_menu: Control = $UI/PauseMenu
+@onready var dialog_menu: Control = $UI/DialogMenu
 @onready var hands: Node3D = $CameraPivot/Camera3D/Hands
 
 # Equipment inventory
@@ -45,9 +47,11 @@ func _ready():
 	# Calculate movement properties from config
 	update_stats()
 	
-	# Set player reference in pause menu
+	# Set player reference in pause menu and dialog menu
 	if pause_menu:
 		pause_menu.player = self
+	if dialog_menu:
+		dialog_menu.player = self
 	
 	# Print config summary
 	print("Player initialized with config:")
@@ -72,6 +76,10 @@ func handle_gravity(delta: float):
 		velocity.y -= GRAVITY * delta
 
 func handle_input():
+	# Skip all player input processing if in dialogue
+	if in_dialogue:
+		return
+	
 	# Get movement input
 	input_vector = Vector2.ZERO
 	if Input.is_action_pressed("forward"):
@@ -180,9 +188,12 @@ func request_dash():
 func try_interact():
 	if interaction_raycast.is_colliding():
 		var collider = interaction_raycast.get_collider()
+		if collider and collider.is_in_group("character"):
+			start_dialogue()
 		if collider and collider.has_method("use"):
 			collider.use()
 			print("Interacting with: ", collider.name)
+			return
 
 func update_stats():
 	move_speed = player_config.speed
@@ -236,3 +247,16 @@ func resume_game():
 	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	pause_menu.visible = false
+
+func start_dialogue():
+	in_dialogue = true
+	hud.visible = false
+	dialog_menu.visible = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	dialog_menu.start_dialog()
+
+func end_dialogue():
+	in_dialogue = false
+	hud.visible = true
+	dialog_menu.visible = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DialogNode" load_steps=5 format=3 uid="uid://bt4njtxmeniof"]
+
+[ext_resource type="Script" uid="uid://d0q2faygh34dn" path="res://src/ui/dialog/dialog_choice.gd" id="1_37few"]
+[ext_resource type="Script" uid="uid://cnaojjwwfhy3y" path="res://src/ui/dialog/dialog_node.gd" id="1_rgtdb"]
+
+[sub_resource type="Resource" id="Resource_shpb0"]
+script = ExtResource("1_37few")
+text = "Yes"
+next = "well_rested"
+metadata/_custom_type_script = "uid://d0q2faygh34dn"
+
+[sub_resource type="Resource" id="Resource_dx4eh"]
+script = ExtResource("1_37few")
+text = "No"
+next = "tired"
+metadata/_custom_type_script = "uid://d0q2faygh34dn"
+
+[resource]
+script = ExtResource("1_rgtdb")
+id = "start"
+speaker = "Boblin"
+text = "Hi! Have you slept well?"
+choices = Array[ExtResource("1_37few")]([SubResource("Resource_shpb0"), SubResource("Resource_dx4eh")])
+set_flags = Array[String]([""])
+next = "unknown"
+metadata/_custom_type_script = "uid://cnaojjwwfhy3y"

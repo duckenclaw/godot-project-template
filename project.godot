@@ -27,6 +27,7 @@ window/size/viewport_height=900
 player=""
 enemy=""
 interactable=""
+character=""
 
 [input]
 

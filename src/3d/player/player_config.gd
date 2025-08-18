@@ -9,7 +9,8 @@ class_name PlayerConfig
 @export var fortitude: float = 10.0  
 @export var motorics: float = 10.0
 @export var willpower: float = 10.0
-@export var starting_weight: float = 70.0
+@export var starting_weight: float = 70.02
+@export var story_flags: Array[String]
 
 # Calculated properties
 var weight: float:

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DialogueNode" load_steps=2 format=3 uid="uid://crgjrloqrrrso"]
+
+[ext_resource type="Script" uid="uid://cnaojjwwfhy3y" path="res://src/ui/dialog/dialog_data.gd" id="1_6su8k"]
+
+[resource]
+script = ExtResource("1_6su8k")
+id = "well_rested"
+speaker = "Boblin"
+text = "That's good to hear!"
+choices = Array[Dictionary]([])
+set_flags = Array[String](["player_rested"])
+next = "end"
+metadata/_custom_type_script = "uid://cnaojjwwfhy3y"

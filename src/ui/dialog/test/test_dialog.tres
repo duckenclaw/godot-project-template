@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DialogueResource" load_steps=7 format=3 uid="uid://dmafq6ugp7ebi"]
+
+[ext_resource type="Script" uid="uid://cnaojjwwfhy3y" path="res://src/ui/dialog/dialog_data.gd" id="1_d8hy5"]
+[ext_resource type="Resource" uid="uid://bt4njtxmeniof" path="res://src/ui/dialog/test/dialog-nodes/start_dialog_node.tres" id="2_ltngb"]
+[ext_resource type="Resource" uid="uid://7oclvpgjamtj" path="res://src/ui/dialog/test/dialog-nodes/tired_dialog_node.tres" id="3_dnfu3"]
+[ext_resource type="Resource" uid="uid://crgjrloqrrrso" path="res://src/ui/dialog/test/dialog-nodes/well_rested_dialog_node.tres" id="4_xfn77"]
+[ext_resource type="Resource" uid="uid://q7qheld3ki3g" path="res://src/ui/dialog/test/dialog-nodes/unknown_dialog_node.tres" id="5_c7f4u"]
+[ext_resource type="Script" uid="uid://cmew5i53aiqbh" path="res://src/ui/dialog/dialog_resource.gd" id="6_mk7a3"]
+
+[resource]
+script = ExtResource("6_mk7a3")
+id = "test_dialogue"
+nodes = Array[ExtResource("1_d8hy5")]([ExtResource("2_ltngb"), ExtResource("3_dnfu3"), ExtResource("4_xfn77"), ExtResource("5_c7f4u")])
