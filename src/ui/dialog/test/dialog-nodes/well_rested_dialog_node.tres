@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="DialogueNode" load_steps=2 format=3 uid="uid://crgjrloqrrrso"]
+[gd_resource type="Resource" script_class="DialogNode" load_steps=3 format=3 uid="uid://crgjrloqrrrso"]
 
-[ext_resource type="Script" uid="uid://cnaojjwwfhy3y" path="res://src/ui/dialog/dialog_data.gd" id="1_6su8k"]
+[ext_resource type="Script" uid="uid://cnaojjwwfhy3y" path="res://src/ui/dialog/dialog_node.gd" id="1_6su8k"]
+[ext_resource type="Script" uid="uid://d0q2faygh34dn" path="res://src/ui/dialog/dialog_choice.gd" id="1_ouukt"]
 
 [resource]
 script = ExtResource("1_6su8k")
 id = "well_rested"
 speaker = "Boblin"
 text = "That's good to hear!"
-choices = Array[Dictionary]([])
-set_flags = Array[String](["player_rested"])
-next = "end"
+set_flags = Array[String](["well_rested"])
+next = "intro"
 metadata/_custom_type_script = "uid://cnaojjwwfhy3y"

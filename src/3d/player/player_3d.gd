@@ -56,6 +56,7 @@ func _ready():
 	# Print config summary
 	print("Player initialized with config:")
 	print(player_config.get_stats_summary())
+	print(player_config.get_flags_summary())
 
 func _physics_process(delta:
 float):

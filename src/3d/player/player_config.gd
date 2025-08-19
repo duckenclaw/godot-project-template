@@ -51,3 +51,26 @@ func get_stats_summary() -> String:
 	return "Stats - Might: %.1f, Fortitude: %.1f, Motorics: %.1f\nCalculated - Weight: %.1f, Speed: %.1f, Jump: %.1f, Dash: %.1f, Sprint: %.2fx" % [
 		might, fortitude, motorics, weight, speed, jump_height, dash_length, sprint_multiplier
 	]
+
+# Story flag management functions
+func has_flag(flag: String) -> bool:
+	return story_flags.has(flag)
+
+func add_flag(flag: String) -> void:
+	if not story_flags.has(flag):
+		story_flags.append(flag)
+		print("Added story flag: " + flag)
+
+func remove_flag(flag: String) -> void:
+	if story_flags.has(flag):
+		story_flags.erase(flag)
+		print("Removed story flag: " + flag)
+
+func has_all_flags(flags: Array[String]) -> bool:
+	for flag in flags:
+		if not story_flags.has(flag):
+			return false
+	return true
+
+func get_flags_summary() -> String:
+	return "Story flags: " + str(story_flags)

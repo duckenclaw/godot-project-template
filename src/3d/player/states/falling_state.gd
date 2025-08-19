@@ -24,6 +24,9 @@ func physics_update(delta: float):
 			transition_to("moving")
 		return
 	
+	if player.dash_cooldown <= 0:
+		player
+	
 	# Check for jump (coyote time)
 	if player.can_jump():
 		player.request_jump()

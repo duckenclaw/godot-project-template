@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="DialogueNode" load_steps=2 format=3 uid="uid://7oclvpgjamtj"]
+[gd_resource type="Resource" script_class="DialogNode" load_steps=3 format=3 uid="uid://7oclvpgjamtj"]
 
-[ext_resource type="Script" uid="uid://cnaojjwwfhy3y" path="res://src/ui/dialog/dialog_data.gd" id="1_3v3c8"]
+[ext_resource type="Script" uid="uid://cnaojjwwfhy3y" path="res://src/ui/dialog/dialog_node.gd" id="1_3v3c8"]
+[ext_resource type="Script" uid="uid://d0q2faygh34dn" path="res://src/ui/dialog/dialog_choice.gd" id="1_5c8gf"]
 
 [resource]
 script = ExtResource("1_3v3c8")
 id = "tired"
 speaker = "Boblin"
 text = "Sorry to hear that. Maybe today will cheer you up."
-choices = Array[Dictionary]([])
-set_flags = Array[String](["player_tired"])
-next = "end"
+set_flags = Array[String](["tired"])
+next = "intro"
 metadata/_custom_type_script = "uid://cnaojjwwfhy3y"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://cst7vo0ldo7e8"]
+[gd_scene load_steps=33 format=3 uid="uid://cst7vo0ldo7e8"]
 
 [ext_resource type="Script" uid="uid://bd4o3yxnjgp1f" path="res://src/3d/player/player_3d.gd" id="1_uviay"]
 [ext_resource type="Script" uid="uid://b314boduvwxi5" path="res://src/3d/player/player_config.gd" id="2_4cdic"]
@@ -17,10 +17,7 @@
 [ext_resource type="Script" uid="uid://bcvyr8j430mkn" path="res://src/3d/player/states/crouching_state.gd" id="9_crouching"]
 [ext_resource type="Script" uid="uid://bkdovu50qaie2" path="res://src/3d/player/states/wallrunning_state.gd" id="10_wallrunning"]
 [ext_resource type="PackedScene" uid="uid://4epmqkty5xqt" path="res://src/ui/hud.tscn" id="17_mrd8b"]
-[ext_resource type="Texture2D" uid="uid://d0n62d264ha7a" path="res://assets/duckclaw.png" id="19_4sddl"]
-[ext_resource type="Script" uid="uid://djtyb284twlq0" path="res://src/ui/dialogue_menu.gd" id="19_ysrmk"]
-[ext_resource type="Resource" uid="uid://dmafq6ugp7ebi" path="res://src/ui/dialog/test/test_dialog.tres" id="20_28mfp"]
-[ext_resource type="Texture2D" uid="uid://bdqc1yc4gxwtw" path="res://icon.png" id="20_sgjv6"]
+[ext_resource type="PackedScene" uid="uid://b48kkpmeflpcv" path="res://src/ui/dialog/dialog_menu.tscn" id="19_4sddl"]
 [ext_resource type="PackedScene" uid="uid://c4qrq5kj8wqt4" path="res://src/ui/pause_menu.tscn" id="21_pause_menu"]
 
 [sub_resource type="Resource" id="Resource_lf55u"]
@@ -609,103 +606,7 @@ libraries = {
 [node name="PauseMenu" parent="UI" instance=ExtResource("21_pause_menu")]
 visible = false
 
-[node name="DialogMenu" type="Control" parent="UI"]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("19_ysrmk")
-dialog = ExtResource("20_28mfp")
-
-[node name="DialogPanel" type="PanelContainer" parent="UI/DialogMenu"]
-custom_minimum_size = Vector2(0, 240)
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/DialogMenu/DialogPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 80
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 80
-theme_override_constants/margin_bottom = 40
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/DialogMenu/DialogPanel/MarginContainer"]
-layout_mode = 2
-
-[node name="SpeakerNameLabel" type="Label" parent="UI/DialogMenu/DialogPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-text = "Speaker"
-vertical_alignment = 1
-
-[node name="DialogText" type="RichTextLabel" parent="UI/DialogMenu/DialogPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "Hello World!"
-
-[node name="PlayerIcon" type="TextureRect" parent="UI/DialogMenu"]
-layout_mode = 0
-offset_left = 40.0
-offset_top = 580.0
-offset_right = 140.0
-offset_bottom = 680.0
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("19_4sddl")
-
-[node name="SpeakerIcon" type="TextureRect" parent="UI/DialogMenu"]
-modulate = Color(1, 1, 1, 0.49411765)
-layout_mode = 0
-offset_left = 1480.0
-offset_top = 580.0
-offset_right = 1544.0
-offset_bottom = 644.0
-texture = ExtResource("20_sgjv6")
-
-[node name="DialogChoices" type="VBoxContainer" parent="UI/DialogMenu"]
-visible = false
-layout_mode = 0
-offset_left = 168.0
-offset_top = 446.0
-offset_right = 408.0
-offset_bottom = 778.0
-
-[node name="DialogChoiceButton1" type="Button" parent="UI/DialogMenu/DialogChoices"]
-visible = false
-custom_minimum_size = Vector2(240, 80)
-layout_mode = 2
-text = "Yes. I absolutely agree with you"
-autowrap_mode = 2
-
-[node name="DialogChoiceButton2" type="Button" parent="UI/DialogMenu/DialogChoices"]
-visible = false
-custom_minimum_size = Vector2(240, 80)
-layout_mode = 2
-text = "No. I absolutely disagree with you"
-autowrap_mode = 2
-
-[node name="DialogChoiceButton3" type="Button" parent="UI/DialogMenu/DialogChoices"]
-visible = false
-custom_minimum_size = Vector2(240, 80)
-layout_mode = 2
-text = "No. I absolutely disagree with you"
-autowrap_mode = 2
-
-[node name="DialogChoiceButton4" type="Button" parent="UI/DialogMenu/DialogChoices"]
-visible = false
-custom_minimum_size = Vector2(240, 80)
-layout_mode = 2
-text = "No. I absolutely disagree with you"
-autowrap_mode = 2
+[node name="DialogMenu" parent="UI" instance=ExtResource("19_4sddl")]
 
 [connection signal="item_equipped" from="CameraPivot/Camera3D/Hands/LeftHand" to="CameraPivot/Camera3D/Hands" method="_on_item_equipped"]
 [connection signal="item_unequipped" from="CameraPivot/Camera3D/Hands/LeftHand" to="CameraPivot/Camera3D/Hands" method="_on_item_unequipped"]
@@ -716,7 +617,3 @@ autowrap_mode = 2
 [connection signal="area_exited" from="CameraPivot/Camera3D/Hands/RightHand/AttackHitbox" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_attack_hitbox_exodus"]
 [connection signal="body_entered" from="CameraPivot/Camera3D/Hands/RightHand/AttackHitbox" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_attack_hitbox_collision"]
 [connection signal="body_exited" from="CameraPivot/Camera3D/Hands/RightHand/AttackHitbox" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_attack_hitbox_exodus"]
-[connection signal="pressed" from="UI/DialogMenu/DialogChoices/DialogChoiceButton1" to="UI/DialogMenu" method="_on_dialog_choice_1"]
-[connection signal="pressed" from="UI/DialogMenu/DialogChoices/DialogChoiceButton2" to="UI/DialogMenu" method="_on_dialog_choice_2"]
-[connection signal="pressed" from="UI/DialogMenu/DialogChoices/DialogChoiceButton3" to="UI/DialogMenu" method="_on_dialog_choice_3"]
-[connection signal="pressed" from="UI/DialogMenu/DialogChoices/DialogChoiceButton4" to="UI/DialogMenu" method="_on_dialog_choice_4"]
