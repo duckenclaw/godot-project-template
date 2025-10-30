@@ -81,3 +81,37 @@ func can_slash() -> bool:
 
 func can_thrust() -> bool:
 	return thrust_damage > 0
+
+## Perform the primary action for this melee weapon
+## Returns a dictionary with action results: {success: bool, cooldown: float}
+func perform_primary_action(anim_player: AnimationPlayer, targets: Array) -> Dictionary:
+	var result = {
+		"success": false,
+		"cooldown": 0.0
+	}
+
+	# Set cooldown based on weapon speed
+	result.cooldown = 1.0 / speed
+
+	# Pick a random attack animation
+	var animation = attack_animations.pick_random()
+	anim_player.play(animation)
+	print(animation)
+
+	# Calculate damage based on animation type
+	var damage: float
+	match animation:
+		"thrust":
+			print("thrusting")
+			damage = thrust_damage
+		"slash_right", "slash_left":
+			print("slashing")
+			damage = slash_damage
+
+	# Apply damage to all targets in range
+	for target in targets:
+		if target.has_method("take_damage"):
+			target.take_damage(damage, damage_type)
+
+	result.success = true
+	return result

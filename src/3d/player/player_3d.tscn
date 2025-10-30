@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://cst7vo0ldo7e8"]
+[gd_scene load_steps=32 format=3 uid="uid://cst7vo0ldo7e8"]
 
 [ext_resource type="Script" uid="uid://bd4o3yxnjgp1f" path="res://src/3d/player/player_3d.gd" id="1_uviay"]
 [ext_resource type="Script" uid="uid://b314boduvwxi5" path="res://src/3d/player/player_config.gd" id="2_4cdic"]
@@ -372,9 +372,6 @@ _data = {
 &"thrust": SubResource("Animation_74bd3")
 }
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_4sddl"]
-size = Vector3(2, 1, 1.5)
-
 [sub_resource type="Animation" id="Animation_lf55u"]
 length = 0.001
 tracks/0/type = "value"
@@ -501,19 +498,19 @@ _data = {
 &"uncrouch": SubResource("Animation_cn2xr")
 }
 
-[node name="Player3d" type="CharacterBody3D" groups=["player"]]
+[node name="Player3d" type="CharacterBody3D" unique_id=1893068060 groups=["player"]]
 script = ExtResource("1_uviay")
 player_config = SubResource("Resource_lf55u")
 available_items = Array[ExtResource("3_cn2xr")]([ExtResource("4_iq4wb")])
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1147088564]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_3obeq")
 
-[node name="CameraPivot" type="Node3D" parent="."]
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1298858464]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 
-[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+[node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=444634097]
 environment = ExtResource("5_4sddl")
 script = ExtResource("2_camera")
 base_fov = 75.0
@@ -521,99 +518,81 @@ sway_intensity = 0.10000000000582077
 sway_frequency = 2.5
 vertical_sway_intensity = 0.02500000000873115
 
-[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/Camera3D"]
+[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/Camera3D" unique_id=579839649]
 target_position = Vector3(0, 0, -2.5)
 
-[node name="Hands" type="Node3D" parent="CameraPivot/Camera3D"]
+[node name="Hands" type="Node3D" parent="CameraPivot/Camera3D" unique_id=1194411079]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, -1)
 script = ExtResource("7_8knbu")
 
-[node name="LeftHand" type="Node3D" parent="CameraPivot/Camera3D/Hands"]
+[node name="LeftHand" type="Node3D" parent="CameraPivot/Camera3D/Hands" unique_id=232846971]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0, 0)
 script = ExtResource("8_4sddl")
 
-[node name="ItemHolder" type="Node3D" parent="CameraPivot/Camera3D/Hands/LeftHand"]
+[node name="ItemHolder" type="Node3D" parent="CameraPivot/Camera3D/Hands/LeftHand" unique_id=18514087]
 
-[node name="HandAnimationPlayer" type="AnimationPlayer" parent="CameraPivot/Camera3D/Hands/LeftHand"]
+[node name="HandAnimationPlayer" type="AnimationPlayer" parent="CameraPivot/Camera3D/Hands/LeftHand" unique_id=93855412]
 libraries = {
 &"": SubResource("AnimationLibrary_8br1h")
 }
-autoplay = "idle"
+autoplay = &"idle"
 
-[node name="AttackHitbox" type="Area3D" parent="CameraPivot/Camera3D/Hands/LeftHand"]
-monitoring = false
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraPivot/Camera3D/Hands/LeftHand/AttackHitbox"]
-shape = SubResource("BoxShape3D_4sddl")
-
-[node name="RightHand" type="Node3D" parent="CameraPivot/Camera3D/Hands"]
+[node name="RightHand" type="Node3D" parent="CameraPivot/Camera3D/Hands" unique_id=372820782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, 0)
 script = ExtResource("8_4sddl")
 hand_side = "right"
 is_dominant = true
 
-[node name="ItemHolder" type="Node3D" parent="CameraPivot/Camera3D/Hands/RightHand"]
+[node name="ItemHolder" type="Node3D" parent="CameraPivot/Camera3D/Hands/RightHand" unique_id=1461244932]
 transform = Transform3D(0.9999999, 0, 0, 0, 0.99999917, 0, 0, 0, 1.0000002, 0, 0, 0)
 
-[node name="HandAnimationPlayer" type="AnimationPlayer" parent="CameraPivot/Camera3D/Hands/RightHand"]
+[node name="HandAnimationPlayer" type="AnimationPlayer" parent="CameraPivot/Camera3D/Hands/RightHand" unique_id=2110925220]
 libraries = {
 &"": SubResource("AnimationLibrary_8br1h")
 }
-autoplay = "idle"
+autoplay = &"idle"
 
-[node name="AttackHitbox" type="Area3D" parent="CameraPivot/Camera3D/Hands/RightHand"]
-monitoring = false
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraPivot/Camera3D/Hands/RightHand/AttackHitbox"]
-shape = SubResource("BoxShape3D_4sddl")
-
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="." unique_id=528781368]
 script = ExtResource("3_statemachine")
 initial_state = NodePath("IdleState")
 
-[node name="IdleState" type="Node" parent="StateMachine"]
+[node name="IdleState" type="Node" parent="StateMachine" unique_id=1447654849]
 script = ExtResource("4_idle")
 
-[node name="MovingState" type="Node" parent="StateMachine"]
+[node name="MovingState" type="Node" parent="StateMachine" unique_id=625285955]
 script = ExtResource("5_moving")
 
-[node name="JumpingState" type="Node" parent="StateMachine"]
+[node name="JumpingState" type="Node" parent="StateMachine" unique_id=933882508]
 script = ExtResource("6_jumping")
 
-[node name="FallingState" type="Node" parent="StateMachine"]
+[node name="FallingState" type="Node" parent="StateMachine" unique_id=101004441]
 script = ExtResource("7_falling")
 
-[node name="DashingState" type="Node" parent="StateMachine"]
+[node name="DashingState" type="Node" parent="StateMachine" unique_id=1074395457]
 script = ExtResource("8_dashing")
 
-[node name="CrouchingState" type="Node" parent="StateMachine"]
+[node name="CrouchingState" type="Node" parent="StateMachine" unique_id=532473353]
 script = ExtResource("9_crouching")
 
-[node name="WallrunningState" type="Node" parent="StateMachine"]
+[node name="WallrunningState" type="Node" parent="StateMachine" unique_id=241127390]
 script = ExtResource("10_wallrunning")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=247484182]
 libraries = {
 &"": SubResource("AnimationLibrary_ngeo7")
 }
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=698459996]
 
-[node name="HUD" parent="UI" instance=ExtResource("17_mrd8b")]
+[node name="HUD" parent="UI" unique_id=1452065422 instance=ExtResource("17_mrd8b")]
 
-[node name="PauseMenu" parent="UI" instance=ExtResource("21_pause_menu")]
+[node name="PauseMenu" parent="UI" unique_id=1367479475 instance=ExtResource("21_pause_menu")]
 visible = false
 
-[node name="DialogMenu" parent="UI" instance=ExtResource("19_4sddl")]
+[node name="DialogMenu" parent="UI" unique_id=1915928272 instance=ExtResource("19_4sddl")]
 
 [connection signal="item_equipped" from="CameraPivot/Camera3D/Hands/LeftHand" to="CameraPivot/Camera3D/Hands" method="_on_item_equipped"]
 [connection signal="item_unequipped" from="CameraPivot/Camera3D/Hands/LeftHand" to="CameraPivot/Camera3D/Hands" method="_on_item_unequipped"]
 [connection signal="item_equipped" from="CameraPivot/Camera3D/Hands/RightHand" to="CameraPivot/Camera3D/Hands" method="_on_item_equipped"]
 [connection signal="item_unequipped" from="CameraPivot/Camera3D/Hands/RightHand" to="CameraPivot/Camera3D/Hands" method="_on_item_unequipped"]
 [connection signal="animation_finished" from="CameraPivot/Camera3D/Hands/RightHand/HandAnimationPlayer" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_animation_finished"]
-[connection signal="area_entered" from="CameraPivot/Camera3D/Hands/RightHand/AttackHitbox" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_attack_hitbox_collision"]
-[connection signal="area_exited" from="CameraPivot/Camera3D/Hands/RightHand/AttackHitbox" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_attack_hitbox_exodus"]
-[connection signal="body_entered" from="CameraPivot/Camera3D/Hands/RightHand/AttackHitbox" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_attack_hitbox_collision"]
-[connection signal="body_exited" from="CameraPivot/Camera3D/Hands/RightHand/AttackHitbox" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_attack_hitbox_exodus"]

@@ -13,7 +13,6 @@ var action_cooldown: float = 0.0
 var enemies_in_melee: Array = []
 
 @onready var item_holder: Node3D = $ItemHolder
-@onready var attack_hitbox: Area3D = $AttackHitbox
 @onready var anim_player: AnimationPlayer = $HandAnimationPlayer
 
 # For storing instantiated scene models
@@ -95,30 +94,21 @@ func perform_action(action_type: String = "primary") -> bool:
 func perform_primary_action() -> bool:
 	if not equipped_item:
 		return false
-	
-	match equipped_item.category:
-		"melee":
-			attack_hitbox.monitoring = true
-			# Set cooldown based on weapon speed
-			action_cooldown = 1.0 / equipped_item.speed
+
+	# Delegate action to the item itself
+	if equipped_item.has_method("perform_primary_action"):
+		var result = equipped_item.perform_primary_action(anim_player, enemies_in_melee)
+
+		if result.success:
+			# Apply cooldown from the item
+			action_cooldown = result.cooldown
 			is_busy = true
-			var animation = equipped_item.attack_animations.pick_random()
-			anim_player.play(animation)
-			print(animation)
-			var damage: float
-			match animation:
-				"thrust":
-					print("thrusting")
-					damage = equipped_item.thrust_damage
-				"slash_right", "slash_left":
-					print("slashing")
-					damage = equipped_item.slash_damage
-			for enemy in enemies_in_melee:
-				enemy.take_damage(damage, equipped_item.damage_type)
 			return true
-		_:
-			print("Unknown item category for action: ", equipped_item.category)
+		else:
 			return false
+	else:
+		print("Item does not have perform_primary_action method: ", equipped_item.get_display_name())
+		return false
 
 func update_visual():
 	# Clear any existing visuals first
@@ -154,20 +144,7 @@ func get_status_text() -> String:
 	return status
 
 
-func _on_attack_hitbox_collision(body: Node3D):
-	if body.is_in_group("enemy"):
-		enemies_in_melee.append(body)
-		print("body entered: " + body.name)
-
-
-func _on_attack_hitbox_exodus(body: Node3D):
-	if body.is_in_group("enemy"):
-		enemies_in_melee.erase(body)
-		print("body exited: " + body.name)
-
-
 func _on_animation_finished(anim_name: StringName):
 	match anim_name:
 		"slash_right", "slash_left", "thrust":
-			attack_hitbox.monitoring = false
 			anim_player.play("idle")

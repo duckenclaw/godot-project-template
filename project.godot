@@ -13,7 +13,7 @@ config_version=5
 config/name="godot-project-template"
 config/tags=PackedStringArray("2d")
 run/main_scene="uid://bbnssv0o4f2j3"
-config/features=PackedStringArray("4.5", "GL Compatibility")
+config/features=PackedStringArray("4.6", "GL Compatibility")
 run/max_fps=60
 config/icon="uid://bdqc1yc4gxwtw"
 

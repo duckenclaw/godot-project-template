@@ -1,6 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cqmpq6c2evtwe"]
 
-[ext_resource type="Script" uid="uid://boh1ntsrwauty" path="res://src/3d/neutral.gd" id="1_nn7pd"]
+[sub_resource type="GDScript" id="GDScript_cwe2o"]
+script/source = "extends CharacterBody3D"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4chky"]
 
@@ -10,13 +11,13 @@ albedo_color = Color(0.09293146, 0.79128015, 7.70092e-07, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4chky"]
 material = SubResource("StandardMaterial3D_4chky")
 
-[node name="Neutral" type="CharacterBody3D"]
-script = ExtResource("1_nn7pd")
+[node name="Neutral" type="CharacterBody3D" unique_id=1294120201]
+script = SubResource("GDScript_cwe2o")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=941688917]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_4chky")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1869949743]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_4chky")
