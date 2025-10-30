@@ -26,7 +26,7 @@ might = 5.0
 fortitude = 5.0
 motorics = 5.0
 willpower = 5.0
-starting_weight = 25.0
+starting_weight = 15.0
 metadata/_custom_type_script = "uid://b314boduvwxi5"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3obeq"]
@@ -510,43 +510,48 @@ shape = SubResource("CapsuleShape3D_3obeq")
 [node name="CameraPivot" type="Node3D" parent="." unique_id=1298858464]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 
-[node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=444634097]
+[node name="CameraTilt" type="Node3D" parent="CameraPivot" unique_id=52607541]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/CameraTilt" unique_id=444634097]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 environment = ExtResource("5_4sddl")
 script = ExtResource("2_camera")
 base_fov = 75.0
 sway_intensity = 0.10000000000582077
 sway_frequency = 2.5
 vertical_sway_intensity = 0.02500000000873115
+tilt_position_offset = 1.0
 
-[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/Camera3D" unique_id=579839649]
+[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/CameraTilt/Camera3D" unique_id=579839649]
 target_position = Vector3(0, 0, -2.5)
 
-[node name="Hands" type="Node3D" parent="CameraPivot/Camera3D" unique_id=1194411079]
+[node name="Hands" type="Node3D" parent="CameraPivot/CameraTilt/Camera3D" unique_id=1194411079]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, -1)
 script = ExtResource("7_8knbu")
 
-[node name="LeftHand" type="Node3D" parent="CameraPivot/Camera3D/Hands" unique_id=232846971]
+[node name="LeftHand" type="Node3D" parent="CameraPivot/CameraTilt/Camera3D/Hands" unique_id=232846971]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0, 0)
 script = ExtResource("8_4sddl")
 
-[node name="ItemHolder" type="Node3D" parent="CameraPivot/Camera3D/Hands/LeftHand" unique_id=18514087]
+[node name="ItemHolder" type="Node3D" parent="CameraPivot/CameraTilt/Camera3D/Hands/LeftHand" unique_id=18514087]
 
-[node name="HandAnimationPlayer" type="AnimationPlayer" parent="CameraPivot/Camera3D/Hands/LeftHand" unique_id=93855412]
+[node name="HandAnimationPlayer" type="AnimationPlayer" parent="CameraPivot/CameraTilt/Camera3D/Hands/LeftHand" unique_id=93855412]
 libraries = {
 &"": SubResource("AnimationLibrary_8br1h")
 }
 autoplay = &"idle"
 
-[node name="RightHand" type="Node3D" parent="CameraPivot/Camera3D/Hands" unique_id=372820782]
+[node name="RightHand" type="Node3D" parent="CameraPivot/CameraTilt/Camera3D/Hands" unique_id=372820782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, 0)
 script = ExtResource("8_4sddl")
 hand_side = "right"
 is_dominant = true
 
-[node name="ItemHolder" type="Node3D" parent="CameraPivot/Camera3D/Hands/RightHand" unique_id=1461244932]
+[node name="ItemHolder" type="Node3D" parent="CameraPivot/CameraTilt/Camera3D/Hands/RightHand" unique_id=1461244932]
 transform = Transform3D(0.9999999, 0, 0, 0, 0.99999917, 0, 0, 0, 1.0000002, 0, 0, 0)
 
-[node name="HandAnimationPlayer" type="AnimationPlayer" parent="CameraPivot/Camera3D/Hands/RightHand" unique_id=2110925220]
+[node name="HandAnimationPlayer" type="AnimationPlayer" parent="CameraPivot/CameraTilt/Camera3D/Hands/RightHand" unique_id=2110925220]
 libraries = {
 &"": SubResource("AnimationLibrary_8br1h")
 }
@@ -591,8 +596,8 @@ visible = false
 
 [node name="DialogMenu" parent="UI" unique_id=1915928272 instance=ExtResource("19_4sddl")]
 
-[connection signal="item_equipped" from="CameraPivot/Camera3D/Hands/LeftHand" to="CameraPivot/Camera3D/Hands" method="_on_item_equipped"]
-[connection signal="item_unequipped" from="CameraPivot/Camera3D/Hands/LeftHand" to="CameraPivot/Camera3D/Hands" method="_on_item_unequipped"]
-[connection signal="item_equipped" from="CameraPivot/Camera3D/Hands/RightHand" to="CameraPivot/Camera3D/Hands" method="_on_item_equipped"]
-[connection signal="item_unequipped" from="CameraPivot/Camera3D/Hands/RightHand" to="CameraPivot/Camera3D/Hands" method="_on_item_unequipped"]
-[connection signal="animation_finished" from="CameraPivot/Camera3D/Hands/RightHand/HandAnimationPlayer" to="CameraPivot/Camera3D/Hands/RightHand" method="_on_animation_finished"]
+[connection signal="item_equipped" from="CameraPivot/CameraTilt/Camera3D/Hands/LeftHand" to="CameraPivot/CameraTilt/Camera3D/Hands" method="_on_item_equipped"]
+[connection signal="item_unequipped" from="CameraPivot/CameraTilt/Camera3D/Hands/LeftHand" to="CameraPivot/CameraTilt/Camera3D/Hands" method="_on_item_unequipped"]
+[connection signal="item_equipped" from="CameraPivot/CameraTilt/Camera3D/Hands/RightHand" to="CameraPivot/CameraTilt/Camera3D/Hands" method="_on_item_equipped"]
+[connection signal="item_unequipped" from="CameraPivot/CameraTilt/Camera3D/Hands/RightHand" to="CameraPivot/CameraTilt/Camera3D/Hands" method="_on_item_unequipped"]
+[connection signal="animation_finished" from="CameraPivot/CameraTilt/Camera3D/Hands/RightHand/HandAnimationPlayer" to="CameraPivot/CameraTilt/Camera3D/Hands/RightHand" method="_on_animation_finished"]

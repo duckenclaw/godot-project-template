@@ -130,19 +130,6 @@ func clear_visual():
 		current_model_instance.queue_free()
 		current_model_instance = null
 
-func get_status_text() -> String:
-	if not has_item():
-		return "%s hand: Empty" % hand_side.capitalize()
-	
-	var status = "%s hand: %s" % [hand_side.capitalize(), equipped_item.get_display_name()]
-	
-	if is_busy:
-		status += " (Busy)"
-	elif action_cooldown > 0:
-		status += " (Cooldown: %.1fs)" % action_cooldown
-	
-	return status
-
 
 func _on_animation_finished(anim_name: StringName):
 	match anim_name:

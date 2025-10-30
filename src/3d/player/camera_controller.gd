@@ -24,9 +24,19 @@ class_name CameraController
 @export var max_speed_fov_bonus: float = 10.0
 @export var speed_fov_smoothing: float = 5.0
 
+@export_group("Head Tilt")
+@export var tilt_enabled: bool = true
+@export var max_tilt_angle: float = 15.0  # Maximum tilt angle in degrees
+@export var tilt_position_offset: float = 0.1  # Horizontal offset when tilting
+@export var tilt_smoothing: float = 8.0  # How fast tilt transitions
+
 # Camera rotation
 var pitch: float = 0.0
 var yaw: float = 0.0
+var target_tilt_angle: float = 0.0
+var current_tilt_angle: float = 0.0
+var target_tilt_position: Vector3 = Vector3.ZERO
+var current_tilt_position: Vector3 = Vector3.ZERO
 
 # Walking sway
 var sway_time: float = 0.0
@@ -41,7 +51,8 @@ var current_speed: float = 0.0
 var target_fov: float
 
 @onready var player: CharacterBody3D = get_tree().get_first_node_in_group("player")
-@onready var camera_pivot: Node3D = get_parent()
+@onready var camera_tilt: Node3D = get_parent()
+@onready var camera_pivot: Node3D = camera_tilt.get_parent()
 
 func _ready():
 	base_position = position
@@ -55,8 +66,14 @@ func _input(event: InputEvent):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		handle_mouse_look(event.relative)
 
+	# Handle tilt input
+	if tilt_enabled:
+		handle_tilt_input()
+
 func _process(delta: float):
 	update_camera_effects(delta)
+	if tilt_enabled:
+		update_tilt(delta)
 
 func handle_mouse_look(relative_motion: Vector2):
 	# Horizontal rotation (yaw) - rotate the camera pivot
@@ -141,3 +158,24 @@ func toggle_mouse_capture():
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func handle_tilt_input():
+	# Check tilt input
+	if Input.is_action_pressed("tilt_left"):
+		target_tilt_angle = max_tilt_angle
+		target_tilt_position = Vector3(-tilt_position_offset, 0, 0)
+	elif Input.is_action_pressed("tilt_right"):
+		target_tilt_angle = -max_tilt_angle
+		target_tilt_position = Vector3(tilt_position_offset, 0, 0)
+	else:
+		target_tilt_angle = 0.0
+		target_tilt_position = Vector3.ZERO
+
+func update_tilt(delta: float):
+	# Smoothly interpolate tilt angle
+	current_tilt_angle = lerp(current_tilt_angle, target_tilt_angle, tilt_smoothing * delta)
+	camera_tilt.rotation.z = deg_to_rad(current_tilt_angle)
+
+	# Smoothly interpolate tilt position offset
+	current_tilt_position = current_tilt_position.lerp(target_tilt_position, tilt_smoothing * delta)
+	camera_tilt.position = current_tilt_position

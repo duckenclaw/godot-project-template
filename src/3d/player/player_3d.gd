@@ -31,14 +31,15 @@ const FLOOR_SNAP_LENGTH: float = 0.1
 # Node references
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var camera_pivot: Node3D = $CameraPivot
-@onready var camera: CameraController = $CameraPivot/Camera3D
-@onready var interaction_raycast: RayCast3D = $CameraPivot/Camera3D/RayCast3D
+@onready var camera_tilt: Node3D = $CameraPivot/CameraTilt
+@onready var camera: CameraController = $CameraPivot/CameraTilt/Camera3D
+@onready var interaction_raycast: RayCast3D = $CameraPivot/CameraTilt/Camera3D/RayCast3D
 @onready var state_machine: StateMachine = $States/StateMachine
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var hud: Control = $UI/HUD
 @onready var pause_menu: Control = $UI/PauseMenu
 @onready var dialog_menu: Control = $UI/DialogMenu
-@onready var hands: Node3D = $CameraPivot/Camera3D/Hands
+@onready var hands: Node3D = $CameraPivot/CameraTilt/Camera3D/Hands
 
 # Equipment inventory
 @export var available_items: Array[Item] = []

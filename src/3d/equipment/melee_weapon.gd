@@ -36,51 +36,7 @@ func _init(
 	thrust_damage = p_thrust_damage
 	damage_type = p_damage_type
 	weapon_range = p_weapon_range
-	speed = p_speed
-
-func get_max_damage() -> float:
-	return max(slash_damage, thrust_damage)
-
-func get_average_damage() -> float:
-	return (slash_damage + thrust_damage) / 2.0
-
-func get_damage_text() -> String:
-	if slash_damage > 0 and thrust_damage > 0:
-		return "Slash: %.1f, Thrust: %.1f" % [slash_damage, thrust_damage]
-	elif slash_damage > 0:
-		return "Slash: %.1f" % slash_damage
-	elif thrust_damage > 0:
-		return "Thrust: %.1f" % thrust_damage
-	else:
-		return "No damage"
-
-func get_speed_text() -> String:
-	if speed >= 1.5:
-		return "Very Fast (%.1fx)" % speed
-	elif speed >= 1.2:
-		return "Fast (%.1fx)" % speed
-	elif speed >= 0.8:
-		return "Normal (%.1fx)" % speed
-	elif speed >= 0.6:
-		return "Slow (%.1fx)" % speed
-	else:
-		return "Very Slow (%.1fx)" % speed
-
-func get_info_text() -> String:
-	var info = []
-	info.append(super.get_info_text())
-	info.append("Subcategory: " + subcategory)
-	info.append("Damage: " + get_damage_text())
-	info.append("Damage Type: " + damage_type)
-	info.append("Range: " + weapon_range)
-	info.append("Speed: " + get_speed_text())
-	return "\n".join(info)
-
-func can_slash() -> bool:
-	return slash_damage > 0
-
-func can_thrust() -> bool:
-	return thrust_damage > 0
+	speed = p_speed 
 
 ## Perform the primary action for this melee weapon
 ## Returns a dictionary with action results: {success: bool, cooldown: float}
@@ -90,13 +46,19 @@ func perform_primary_action(anim_player: AnimationPlayer, targets: Array) -> Dic
 		"cooldown": 0.0
 	}
 
-	# Set cooldown based on weapon speed
-	result.cooldown = 1.0 / speed
-
 	# Pick a random attack animation
 	var animation = attack_animations.pick_random()
-	anim_player.play(animation)
+
+	# Calculate playback speed to make animation duration match the speed property
+	var original_length = anim_player.get_animation(animation).length
+	var playback_speed = original_length / speed
+
+	# Play animation at calculated speed
+	anim_player.play(animation, -1, playback_speed)
 	print(animation)
+
+	# Set cooldown to match animation duration
+	result.cooldown = speed
 
 	# Calculate damage based on animation type
 	var damage: float
