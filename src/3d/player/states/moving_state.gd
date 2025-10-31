@@ -54,7 +54,7 @@ func physics_update(delta: float):
 	var horizontal_velocity = player.get_horizontal_velocity()
 	
 	# Smooth movement acceleration
-	var acceleration = 15.0 if player.is_on_floor() else 5.0
+	var acceleration = 35.0 if player.is_on_floor() else 5.0
 	horizontal_velocity = horizontal_velocity.move_toward(target_velocity, acceleration * delta)
 	
 	player.set_horizontal_velocity(horizontal_velocity)

@@ -209,8 +209,18 @@ func request_dash():
 func try_interact():
 	if interaction_raycast.is_colliding():
 		var collider = interaction_raycast.get_collider()
-		if collider and collider.is_in_group("character"):
-			start_dialogue()
+		if collider and collider.has_method("get_dialog"):
+			var npc_dialog = collider.get_dialog()
+			print("DEBUG: NPC dialog is: ", npc_dialog)
+			if npc_dialog:
+				if npc_dialog.nodes.is_empty():
+					push_error("NPC '" + collider.name + "' has a dialog resource but no dialog nodes!")
+					return
+				print("DEBUG: Dialog has ", npc_dialog.nodes.size(), " nodes")
+				start_dialogue(npc_dialog)
+				return
+			else:
+				print("WARNING: NPC '" + collider.name + "' has no dialog assigned")
 		if collider and collider.has_method("use"):
 			collider.use()
 			print("Interacting with: ", collider.name)
@@ -269,9 +279,14 @@ func resume_game():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	pause_menu.visible = false
 
-func start_dialogue():
+func start_dialogue(npc_dialog: DialogResource):
+	print("DEBUG: start_dialogue called with dialog: ", npc_dialog)
+	print("DEBUG: First node is: ", npc_dialog.nodes[0])
+
 	in_dialogue = true
 	hud.visible = false
+	dialog_menu.dialog = npc_dialog
+	dialog_menu.current_dialog = npc_dialog.nodes[0]
 	dialog_menu.visible = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	dialog_menu.start_dialog()

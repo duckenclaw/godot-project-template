@@ -23,7 +23,7 @@ var player: CharacterBody3D
 
 @export var dialog: DialogResource
 
-@onready var current_dialog: DialogNode = dialog.nodes[0]
+var current_dialog: DialogNode
 
 var next_dialog: DialogNode
 var dialog_choices: Array[DialogChoice]
@@ -32,7 +32,7 @@ var waiting_for_choice: bool = false
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("activate"):
+	if !waiting_for_choice and  (event.is_action_pressed("activate") or event.is_action_pressed("ui_accept") or event.is_action_pressed("equip_1") or event.is_action_pressed("equip_2") or event.is_action_pressed("equip_3") or event.is_action_pressed("equip_4")):
 		print(waiting_for_input)
 		advance(current_dialog)
 	elif event.is_action_pressed("equip_1") and waiting_for_choice:
@@ -62,17 +62,22 @@ func _input(event: InputEvent) -> void:
 
 
 func advance(dialog_node: DialogNode):
+	if not dialog_node:
+		push_error("DialogMenu: advance() called with null dialog_node!")
+		exit_dialog()
+		return
+
 	# speaker turn
 	waiting_for_choice = false
 	choice_button_container.visible = false
 	current_dialog = dialog_node
+
 	dialog_text.text = dialog_node.text
 	#	speaker_icon.texture = speaker_texture
-	
+
 	# Process set_flags for this dialog node
 	process_flags(dialog_node.set_flags)
 	
-	print("Current Dialog Node: " + current_dialog.id + "\nChoices: " + str(current_dialog.choices.size()) + "\nNext: " + current_dialog.next)
 
 	if current_dialog.choices.size() > 0 and not waiting_for_input:
 		print("dialogue node has choices, waiting for input to advance to player turn")
@@ -82,7 +87,7 @@ func advance(dialog_node: DialogNode):
 		waiting_for_input = false
 		player_turn(dialog_node.choices)
 	elif current_dialog.choices.size() == 0 and not waiting_for_input:
-		("no choices,")
+		print("no choices")
 		waiting_for_input = true
 	elif current_dialog.next == "end" and waiting_for_input:
 		print("ending dialogue")
@@ -131,6 +136,10 @@ func player_turn(choices: Array[DialogChoice]):
 
 
 func start_dialog():
+	if not dialog or not current_dialog:
+		push_error("DialogMenu: Cannot start dialog - dialog or current_dialog is null")
+		return
+
 	choice_button_container.visible = false
 	print("dialogue started")
 	print("advancing to " + current_dialog.id)
