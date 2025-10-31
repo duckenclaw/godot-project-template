@@ -37,12 +37,12 @@ func physics_update(delta: float):
 	
 	# End wallrun when timer expires or player releases movement
 	var input_direction = player.get_movement_input_direction()
-	if wallrun_timer <= 0 or input_direction == Vector3.ZERO:
+	if !player.is_on_wall_only() or input_direction == Vector3.ZERO:
 		transition_to("falling")
 		return
 	
 	# Check for jump off wall
-	if (player.can_jump() and Input.is_action_just_pressed("jump")) or !player.is_on_wall_only():
+	if (player.can_jump() and Input.is_action_just_pressed("jump")):
 		# Jump away from wall
 		player.velocity.y = player.jump_velocity
 		

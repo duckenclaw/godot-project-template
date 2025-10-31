@@ -24,11 +24,8 @@ func physics_update(delta: float):
 			transition_to("moving")
 		return
 	
-	if player.dash_cooldown <= 0:
-		player
-	
 	# Check for jump (coyote time)
-	if player.can_jump():
+	if player.can_jump() and Input.is_action_pressed("jump") and !player.is_on_wall_only():
 		player.request_jump()
 		transition_to("jumping")
 		return
@@ -37,7 +34,7 @@ func physics_update(delta: float):
 	var input_direction = player.get_movement_input_direction()
 	if input_direction != Vector3.ZERO:
 		var horizontal_velocity = player.get_horizontal_velocity()
-		var air_acceleration = 3.0  # Even more reduced air control when falling
+		var air_acceleration = 5.0  # Even more reduced air control when falling
 		var target_velocity = input_direction * player.move_speed * 0.6  # Reduced air speed
 		
 		horizontal_velocity = horizontal_velocity.move_toward(target_velocity, air_acceleration * delta)

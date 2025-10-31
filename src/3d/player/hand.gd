@@ -97,7 +97,13 @@ func perform_primary_action() -> bool:
 
 	# Delegate action to the item itself
 	if equipped_item.has_method("perform_primary_action"):
-		var result = equipped_item.perform_primary_action(anim_player, enemies_in_melee)
+		# Get combo input from player
+		var player = get_tree().get_first_node_in_group("player")
+		var combo_input = ""
+		if player and player.has_method("detect_combo"):
+			combo_input = player.detect_combo()
+
+		var result = equipped_item.perform_primary_action(anim_player, enemies_in_melee, combo_input)
 
 		if result.success:
 			# Apply cooldown from the item

@@ -13,6 +13,16 @@ class_name MeleeWeapon
 
 var attack_animations = ["slash_right", "slash_left", "thrust"]
 
+# Combo to animation mapping
+var combo_animations = {
+	"forward-backward": "thrust",
+	"forward": "thrust",
+	"right": "slash_right",
+	"left": "slash_left",
+	"circularMotion": "slash_left",
+	"": "slash_right"  # Default if no combo detected
+}
+
 func _init(
 	p_name: String = "",
 	p_icon: Texture2D = null,
@@ -40,14 +50,21 @@ func _init(
 
 ## Perform the primary action for this melee weapon
 ## Returns a dictionary with action results: {success: bool, cooldown: float}
-func perform_primary_action(anim_player: AnimationPlayer, targets: Array) -> Dictionary:
+## combo_input: String representing the detected combo (e.g., "forward-backward", "circularMotion")
+func perform_primary_action(anim_player: AnimationPlayer, targets: Array, combo_input: String = "") -> Dictionary:
 	var result = {
 		"success": false,
 		"cooldown": 0.0
 	}
 
-	# Pick a random attack animation
-	var animation = attack_animations.pick_random()
+	# Get animation based on combo input, or use default if combo not found
+	var animation: String
+	if combo_input in combo_animations:
+		animation = combo_animations[combo_input]
+	else:
+		animation = combo_animations[""]  # Use default
+
+	print("Combo: ", combo_input, " -> Animation: ", animation)
 
 	# Calculate playback speed to make animation duration match the speed property
 	var original_length = anim_player.get_animation(animation).length
@@ -55,7 +72,6 @@ func perform_primary_action(anim_player: AnimationPlayer, targets: Array) -> Dic
 
 	# Play animation at calculated speed
 	anim_player.play(animation, -1, playback_speed)
-	print(animation)
 
 	# Set cooldown to match animation duration
 	result.cooldown = speed

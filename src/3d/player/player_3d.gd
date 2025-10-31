@@ -21,12 +21,21 @@ var jump_buffer_time: float = 0.0
 var dash_cooldown: float = 0.0
 var in_dialogue: bool = false
 
+# Input buffer for combo detection
+var input_buffer: Array[String] = []
+var input_buffer_timer: float = 0.0
+
 # Constants
 const GRAVITY: float = 9.8
 const COYOTE_TIME_DURATION: float = 0.1
 const JUMP_BUFFER_DURATION: float = 0.2
 const DASH_COOLDOWN_DURATION: float = 1.0
 const FLOOR_SNAP_LENGTH: float = 0.1
+
+# Input buffer constants
+const INPUT_BUFFER_SIZE: int = 10
+const INPUT_BUFFER_TIMEOUT: float = 0.5
+const CIRCULAR_MOTION_THRESHOLD: int = 4
 
 # Node references
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
@@ -81,7 +90,10 @@ func handle_input():
 	# Skip all player input processing if in dialogue
 	if in_dialogue:
 		return
-	
+
+	# Track directional inputs for combo system
+	track_directional_inputs()
+
 	# Get movement input
 	input_vector = Vector2.ZERO
 	if Input.is_action_pressed("forward"):
@@ -92,7 +104,7 @@ func handle_input():
 		input_vector.x -= 1
 	if Input.is_action_pressed("right"):
 		input_vector.x += 1
-	
+
 	input_vector = input_vector.normalized()
 	
 	# Handle jump input with buffer
@@ -127,14 +139,21 @@ func handle_timers(delta: float):
 	# Coyote time
 	if coyote_time > 0:
 		coyote_time -= delta
-	
+
 	# Jump buffer
 	if jump_buffer_time > 0:
 		jump_buffer_time -= delta
-	
+
 	# Dash cooldown
 	if dash_cooldown > 0:
 		dash_cooldown -= delta
+
+	# Input buffer timer - clear buffer if timeout expires
+	if input_buffer_timer > 0:
+		input_buffer_timer -= delta
+	else:
+		if input_buffer.size() > 0:
+			input_buffer.clear()
 
 func update_floor_detection():
 	var was_on_floor = is_on_floor_buffered
@@ -172,7 +191,7 @@ func can_jump() -> bool:
 	
 
 func request_jump():
-	if can_jump():
+	if can_jump() and Input.is_action_pressed("jump"):
 		velocity.y = jump_velocity
 		jump_buffer_time = 0
 		coyote_time = 0
@@ -262,3 +281,61 @@ func end_dialogue():
 	hud.visible = true
 	dialog_menu.visible = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+## Add directional input to the input buffer
+func add_input_to_buffer(input_name: String):
+	# Reset timer when new input is added
+	input_buffer_timer = INPUT_BUFFER_TIMEOUT
+
+	# Add input to buffer
+	input_buffer.append(input_name)
+
+	# Limit buffer size
+	if input_buffer.size() > INPUT_BUFFER_SIZE:
+		input_buffer.pop_front()
+
+## Detect combo pattern from input buffer
+func detect_combo() -> String:
+	var buffer_string = "".join(input_buffer)
+	var buffer_size = input_buffer.size()
+
+	# Check for circular motion (4 consecutive directional inputs in a circle)
+	if buffer_size >= CIRCULAR_MOTION_THRESHOLD:
+		var last_four = input_buffer.slice(buffer_size - CIRCULAR_MOTION_THRESHOLD, buffer_size)
+		var circular_patterns = ["WASD", "ASDW", "SDWA", "DWAS", "WDSA", "DSAW", "SAWD", "AWDS"]
+		for pattern in circular_patterns:
+			if "".join(last_four) == pattern:
+				return "circularMotion"
+
+	# Check for forward-backward combo
+	if buffer_size >= 2:
+		var last_two = input_buffer.slice(buffer_size - 2, buffer_size)
+		if "".join(last_two) == "WS" or "".join(last_two) == "SW":
+			return "forward-backward"
+
+
+	# Check for single directional input
+	if buffer_size >= 1:
+		var last_input = input_buffer[buffer_size - 1]
+		match last_input:
+			"W":
+				return "forward"
+			"S":
+				return "backward"
+			"A":
+				return "left"
+			"D":
+				return "right"
+
+	return ""
+
+## Track directional inputs for combo system
+func track_directional_inputs():
+	if Input.is_action_just_pressed("forward"):
+		add_input_to_buffer("W")
+	if Input.is_action_just_pressed("backward"):
+		add_input_to_buffer("S")
+	if Input.is_action_just_pressed("left"):
+		add_input_to_buffer("A")
+	if Input.is_action_just_pressed("right"):
+		add_input_to_buffer("D")
