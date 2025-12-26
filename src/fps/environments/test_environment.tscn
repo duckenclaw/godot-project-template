@@ -1,14 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://yy8qdtf7sruo"]
+[gd_scene load_steps=5 format=3 uid="uid://yy8qdtf7sruo"]
 
 [ext_resource type="PackedScene" uid="uid://bamwgf5q2laml" path="res://src/fps/objects/floor.tscn" id="1_8yvgt"]
 [ext_resource type="PackedScene" uid="uid://bqymmfnxiyvhu" path="res://src/fps/objects/long_wall.tscn" id="1_txgp2"]
 [ext_resource type="PackedScene" uid="uid://b6uoyu8mg70hb" path="res://src/fps/objects/wall.tscn" id="2_cixlx"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_txgp2"]
-size = Vector3(3, 0.25, 3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_txgp2"]
-size = Vector3(3, 0.25, 3)
+[ext_resource type="PackedScene" uid="uid://bdyjg36f8vtk5" path="res://src/fps/objects/platform.tscn" id="4_gt1kl"]
 
 [node name="TestEnvironment" type="Node3D" unique_id=799669179]
 
@@ -23,13 +18,5 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -10,
 [node name="Wall" parent="." unique_id=1049148951 instance=ExtResource("2_cixlx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
 
-[node name="Platform" type="StaticBody3D" parent="." unique_id=2134888387]
+[node name="Platform" parent="." unique_id=912214006 instance=ExtResource("4_gt1kl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1.5, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Platform" unique_id=918498506]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)
-shape = SubResource("BoxShape3D_txgp2")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Platform" unique_id=483647165]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)
-mesh = SubResource("BoxMesh_txgp2")

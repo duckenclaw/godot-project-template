@@ -75,9 +75,9 @@ func update_tilt(delta: float) -> void:
 	# Get tilt input
 	var tilt_input = 0.0
 	if Input.is_action_pressed("tilt_left"):
-		tilt_input = -1.0
-	elif Input.is_action_pressed("tilt_right"):
 		tilt_input = 1.0
+	elif Input.is_action_pressed("tilt_right"):
+		tilt_input = -1.0
 
 	# Update target tilt
 	target_tilt = tilt_input * deg_to_rad(config.tilt_angle)
@@ -85,6 +85,10 @@ func update_tilt(delta: float) -> void:
 	# Smoothly interpolate to target tilt
 	current_tilt = lerp(current_tilt, target_tilt, config.tilt_speed * delta)
 	camera.rotation.z = current_tilt
+
+	# Move camera horizontally based on tilt (left tilt = shift left, right tilt = shift right)
+	var target_x_offset = -tilt_input * config.tilt_shift
+	camera.position.x = lerp(camera.position.x, target_x_offset, config.tilt_speed * delta)
 
 ## Update head bobbing when moving
 func update_movement(speed: float, delta: float) -> void:
