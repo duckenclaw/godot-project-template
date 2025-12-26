@@ -49,6 +49,12 @@ func update(delta: float) -> String:
 				return "MovingState"
 			else:
 				return "IdleState"
+	elif not player.is_crouch_toggled:
+		var input_dir = player.get_input_direction()
+		if input_dir.length() > 0:
+			return "MovingState"
+		else:
+			return "IdleState"
 
 	# Apply friction to slow down
 	var new_speed = max(0, current_speed - player.config.friction * 0.25 * delta)
