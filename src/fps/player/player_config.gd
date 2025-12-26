@@ -23,6 +23,10 @@ extends Resource
 @export var wallrun_gravity: float = 2.0
 @export var wallrun_jump_velocity: float = 8.0
 @export var wallrun_jump_horizontal_velocity: float = 5.0
+@export var wallrun_jump_forward_boost: float = 3.0  # Forward momentum when jumping off wall
+@export var wallrun_speed_decay: float = 3.0  # Speed decrease per second
+@export var wallrun_gravity_increase: float = 8.0  # Gravity increase per second
+@export var wallrun_min_speed: float = 2.0  # Minimum wallrun speed before falling
 
 # Physics
 @export var gravity: float = 20.0

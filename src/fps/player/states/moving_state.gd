@@ -28,7 +28,6 @@ func update(delta: float) -> String:
 	
 	# Check for slide (only when sprinting and crouch toggled on)
 	if player.crouch_pressed and is_sprinting and not was_crouching:
-		print("SLIDING")
 		return "SlidingState"
 	
 	is_crouching = player.is_crouch_toggled

@@ -149,12 +149,12 @@ func setup_wallrun_raycasts() -> void:
 	# Right raycast
 	wallrun_raycast_right.target_position = Vector3(1.0, 0, 0)
 	wallrun_raycast_right.enabled = true
-	add_child(wallrun_raycast_right)
+	camera_pivot.add_child(wallrun_raycast_right)
 
 	# Left raycast
 	wallrun_raycast_left.target_position = Vector3(-1.0, 0, 0)
 	wallrun_raycast_left.enabled = true
-	add_child(wallrun_raycast_left)
+	camera_pivot.add_child(wallrun_raycast_left)
 
 ## Check if player can wallrun
 func can_wallrun() -> bool:

@@ -15,6 +15,9 @@ size = Vector3(3, 0.25, 3)
 [node name="LongWall" parent="." unique_id=979622008 instance=ExtResource("1_txgp2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 
+[node name="LongWall2" parent="." unique_id=1720505796 instance=ExtResource("1_txgp2")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -10, 0, 0)
+
 [node name="Floor" parent="." unique_id=906295620 instance=ExtResource("1_8yvgt")]
 
 [node name="Wall" parent="." unique_id=1049148951 instance=ExtResource("2_cixlx")]

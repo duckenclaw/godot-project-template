@@ -55,7 +55,6 @@ func transition_to(state_name: String) -> void:
 
 	current_state = next_state
 	current_state.enter()
-	print("entering " + get_current_state_name())
 
 ## Get the current state name
 func get_current_state_name() -> String:

@@ -21,8 +21,8 @@ func update(delta: float) -> String:
 		return "DashingState"
 
 	# Check for wallrun
-	if player.can_wallrun():
-		return "WallrunningState"
+#	if player.can_wallrun():
+#		return "WallrunningState"
 
 	# Transition to falling when moving downward
 	if player.velocity.y < 0:
