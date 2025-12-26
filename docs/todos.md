@@ -7,7 +7,7 @@
 - [x] sliding state
 - [x] wallruning state
 - [x] dashing state
-- [ ] camera tilt
+- [x] camera tilt
 - [ ] screen shake
 - [ ] moving objects through "interact"
 - [ ] equipping items
