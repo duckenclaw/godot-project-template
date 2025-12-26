@@ -121,9 +121,15 @@ func handle_input():
 	
 	# Handle equipment
 	if Input.is_action_just_pressed("equip_1"):
-		hands.right_hand.equip_item(available_items[0])
+		if available_items.size() > 0:
+			hands.right_hand.unequip_item()
+			hands.right_hand.equip_item(available_items[0])
 	if Input.is_action_just_pressed("equip_2"):
-		hands.right_hand.unequip_item()
+		if available_items.size() > 1:
+			hands.right_hand.unequip_item()
+			hands.right_hand.equip_item(available_items[1])
+		else:
+			hands.right_hand.unequip_item()
 	
 	# Handle attacks
 	if Input.is_action_just_pressed("attack"):

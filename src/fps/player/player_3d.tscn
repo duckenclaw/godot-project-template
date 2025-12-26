@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://o5l7k7ne5nnc" path="res://src/3d/player/states/state_machine.gd" id="3_statemachine"]
 [ext_resource type="Script" uid="uid://dh2fal4fhrxs7" path="res://src/3d/player/states/idle_state.gd" id="4_idle"]
 [ext_resource type="Resource" uid="uid://c7w14i1nrmd8s" path="res://assets/items/iron_dagger.tres" id="4_iq4wb"]
+[ext_resource type="Resource" path="res://src/3d/equipment/fire_magic.tres" id="5_fire_magic"]
 [ext_resource type="Environment" uid="uid://dllxkp6le8ik" path="res://assets/test_environment.tres" id="5_4sddl"]
 [ext_resource type="Script" uid="uid://ceu45w7d1r5qa" path="res://src/3d/player/states/moving_state.gd" id="5_moving"]
 [ext_resource type="Script" uid="uid://c601vmra42qdh" path="res://src/3d/player/states/jumping_state.gd" id="6_jumping"]
@@ -501,7 +502,7 @@ _data = {
 [node name="Player3d" type="CharacterBody3D" unique_id=1893068060 groups=["player"]]
 script = ExtResource("1_uviay")
 player_config = SubResource("Resource_lf55u")
-available_items = Array[ExtResource("3_cn2xr")]([ExtResource("4_iq4wb")])
+available_items = Array[ExtResource("3_cn2xr")]([ExtResource("4_iq4wb"), ExtResource("5_fire_magic")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1147088564]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

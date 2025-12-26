@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgtpbvxtuxshk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hcfm8"]
+albedo_color = Color(1, 0.63529414, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.78431374, 0, 1)
+emission_energy_multiplier = 0.51
+
+[sub_resource type="PrismMesh" id="PrismMesh_hcfm8"]
+material = SubResource("StandardMaterial3D_hcfm8")
+size = Vector3(0.01, 0.01, 0.01)
+
+[node name="FireMagic" type="Node3D" unique_id=184798514]
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="." unique_id=1559611336]
+mesh = SubResource("PrismMesh_hcfm8")
+direction = Vector3(0, 0, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.01
+initial_velocity_max = 0.05

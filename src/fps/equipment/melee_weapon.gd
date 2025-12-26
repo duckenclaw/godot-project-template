@@ -57,6 +57,11 @@ func perform_primary_action(anim_player: AnimationPlayer, targets: Array, combo_
 		"cooldown": 0.0
 	}
 
+	# Safety check: ensure anim_player is valid
+	if not is_instance_valid(anim_player):
+		push_warning("MeleeWeapon: AnimationPlayer is invalid or freed")
+		return result
+
 	# Get animation based on combo input, or use default if combo not found
 	var animation: String
 	if combo_input in combo_animations:
@@ -66,8 +71,19 @@ func perform_primary_action(anim_player: AnimationPlayer, targets: Array, combo_
 
 	print("Combo: ", combo_input, " -> Animation: ", animation)
 
+	# Safety check: ensure animation exists
+	if not anim_player.has_animation(animation):
+		push_warning("MeleeWeapon: Animation '%s' not found in AnimationPlayer" % animation)
+		return result
+
+	# Get animation and check if valid
+	var anim = anim_player.get_animation(animation)
+	if not anim:
+		push_warning("MeleeWeapon: Failed to get animation '%s'" % animation)
+		return result
+
 	# Calculate playback speed to make animation duration match the speed property
-	var original_length = anim_player.get_animation(animation).length
+	var original_length = anim.length
 	var playback_speed = original_length / speed
 
 	# Play animation at calculated speed
@@ -88,7 +104,7 @@ func perform_primary_action(anim_player: AnimationPlayer, targets: Array, combo_
 
 	# Apply damage to all targets in range
 	for target in targets:
-		if target.has_method("take_damage"):
+		if is_instance_valid(target) and target.has_method("take_damage"):
 			target.take_damage(damage, damage_type)
 
 	result.success = true

@@ -95,15 +95,28 @@ func perform_primary_action() -> bool:
 	if not equipped_item:
 		return false
 
+	# Safety check: ensure we're in the tree
+	if not is_inside_tree():
+		return false
+
 	# Delegate action to the item itself
 	if equipped_item.has_method("perform_primary_action"):
 		# Get combo input from player
-		var player = get_tree().get_first_node_in_group("player")
+		var tree = get_tree()
+		if not tree:
+			return false
+
+		var player = tree.get_first_node_in_group("player")
 		var combo_input = ""
-		if player and player.has_method("detect_combo"):
+		if is_instance_valid(player) and player.has_method("detect_combo"):
 			combo_input = player.detect_combo()
 
 		var result = equipped_item.perform_primary_action(anim_player, enemies_in_melee, combo_input)
+
+		# Safety check: ensure result dictionary has required keys
+		if not result or not result.has("success") or not result.has("cooldown"):
+			push_warning("Hand: Invalid result from perform_primary_action")
+			return false
 
 		if result.success:
 			# Apply cooldown from the item
@@ -119,11 +132,18 @@ func perform_primary_action() -> bool:
 func update_visual():
 	# Clear any existing visuals first
 	clear_visual()
-	
+
 	if not equipped_item:
 		return
-		
+
+	# Safety check: ensure item_holder is valid
+	if not is_instance_valid(item_holder):
+		return
+
 	# Handle PackedScene (.glb files)
+	if not equipped_item.model_scene:
+		return
+
 	var scene_instance = equipped_item.model_scene.instantiate()
 	if scene_instance:
 		item_holder.add_child(scene_instance)
@@ -132,7 +152,7 @@ func update_visual():
 
 func clear_visual():
 	# Clear scene instance
-	if current_model_instance:
+	if current_model_instance and is_instance_valid(current_model_instance):
 		current_model_instance.queue_free()
 		current_model_instance = null
 

@@ -14,3 +14,7 @@ export_presets.cfg
 
 # Compiled Gettext message catalogue
 *.mo
+
+# IDE
+.idea
+.claude
