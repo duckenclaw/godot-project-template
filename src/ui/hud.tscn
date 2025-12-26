@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://4epmqkty5xqt"]
+[gd_scene load_steps=8 format=3 uid="uid://4epmqkty5xqt"]
 
 [ext_resource type="Theme" uid="uid://b3ql5ekwvpoqt" path="res://assets/hud.tres" id="1_snmo6"]
 [ext_resource type="Script" uid="uid://c3ti3vejdx3gy" path="res://src/ui/hud.gd" id="2_i4jpw"]
@@ -13,7 +13,6 @@ bg_color = Color(0.1, 0.1, 0.1, 0.3)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
 corner_detail = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mrd8b"]
@@ -34,9 +33,15 @@ content_margin_top = 2.0
 content_margin_right = 2.0
 content_margin_bottom = 2.0
 bg_color = Color(0.019607844, 0.019607844, 0.88235295, 0.49019608)
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_detail = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_snmo6"]
+bg_color = Color(0.13333334, 0.5568628, 0.13333334, 1)
+corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-corner_detail = 6
 
 [node name="HUD" type="Control" unique_id=357051303]
 layout_mode = 3
@@ -111,7 +116,33 @@ theme_override_font_sizes/font_size = 14
 text = "50/100"
 vertical_alignment = 1
 
+[node name="StaminaBar" type="ProgressBar" parent="MarginContainer/Bars" unique_id=1976187160]
+custom_minimum_size = Vector2(220, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_b78gm")
+theme_override_styles/fill = SubResource("StyleBoxFlat_snmo6")
+value = 50.0
+show_percentage = false
+
+[node name="Value" type="Label" parent="MarginContainer/Bars/StaminaBar" unique_id=1866512818]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 13.0
+offset_top = -10.0
+offset_right = -107.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 14
+text = "50/100"
+vertical_alignment = 1
+
 [node name="EquippedItem" type="VBoxContainer" parent="MarginContainer" unique_id=507088000]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
