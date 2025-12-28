@@ -6,6 +6,8 @@ var wall_normal: Vector3
 var wallrun_direction: Vector3
 var current_wallrun_speed: float
 var current_gravity: float
+var step_timer: float = 0.0
+const WALLRUN_STEP_INTERVAL: float = 0.1  # Time between steps while wallrunning
 
 func enter() -> void:
 	player.set_normal_height()
@@ -26,6 +28,13 @@ func enter() -> void:
 	player.velocity = wallrun_direction * current_wallrun_speed
 	player.velocity.y = 0
 
+	# Reset step timer
+	step_timer = 0.0
+
+	# Play initial footstep sound when starting wallrun
+	if player.camera:
+		player.camera.play_footstep(current_wallrun_speed)
+
 	# Set camera tilt based on which side the wall is on
 	update_camera_tilt()
 
@@ -43,6 +52,11 @@ func update(delta: float) -> String:
 
 		player.velocity = jump_direction * total_horizontal_speed
 		player.velocity.y = player.config.wallrun_jump_velocity
+
+		# Play jump sound
+		if player.camera:
+			player.camera.play_jump_sound()
+
 		return "JumpingState"
 
 	# Decrease horizontal speed over time
@@ -76,6 +90,13 @@ func update(delta: float) -> String:
 
 	# Apply increasing gravity (slide down faster over time)
 	player.velocity.y -= current_gravity * delta
+
+	# Update step timer and play footsteps
+	step_timer += delta
+	if step_timer >= WALLRUN_STEP_INTERVAL:
+		step_timer = 0.0
+		if player.camera:
+			player.camera.play_footstep(current_wallrun_speed)
 
 	player.move_and_slide()
 

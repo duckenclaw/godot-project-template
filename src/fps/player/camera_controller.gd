@@ -21,6 +21,15 @@ var manual_tilt_enabled: bool = true
 
 # Head bobbing
 var bob_time: float = 0.0
+var last_bob_phase: float = 0.0
+var was_moving: bool = false
+
+# Footsteps
+var footsteps_player: AudioStreamPlayer3D = null
+var step_sounds: Array[AudioStream] = []
+var jump_sound: AudioStream = null
+const STEP_PITCH_MIN: float = 0.9
+const STEP_PITCH_MAX: float = 1.1
 
 # FOV
 var current_fov: float = 75.0
@@ -35,6 +44,20 @@ func _ready() -> void:
 		if config:
 			current_fov = config.base_fov
 			camera.fov = current_fov
+
+	# Get footsteps player reference
+	if player and player.has_node("FootstepsPlayer"):
+		footsteps_player = player.get_node("FootstepsPlayer")
+
+	# Load multiple step sounds
+	step_sounds = [
+		load("res://assets/sounds/steps/step0.wav"),
+		load("res://assets/sounds/steps/step1.wav"),
+		load("res://assets/sounds/steps/step2.wav")
+	]
+
+	# Load jump sound
+	jump_sound = load("res://assets/sounds/jump.wav")
 
 func _input(event: InputEvent) -> void:
 	if not config:
@@ -107,11 +130,29 @@ func update_tilt(delta: float) -> void:
 
 ## Update head bobbing when moving
 func update_movement(speed: float, delta: float) -> void:
-	if speed > 0.1 and player.is_on_floor():
+	var is_moving = speed > 0.1 and player.is_on_floor()
+
+	if is_moving:
+		var previous_bob_time = bob_time
 		bob_time += delta * config.bob_frequency * speed
 		var bob_offset = sin(bob_time) * config.bob_amplitude
 		camera.position.y = bob_offset
+
+		# Detect footsteps - trigger when sine wave crosses from negative to positive (bottom of bob)
+		var current_phase = fmod(bob_time, TAU)
+		var previous_phase = fmod(previous_bob_time, TAU)
+
+		# Check if we crossed PI (bottom of the step cycle)
+		if (previous_phase < PI and current_phase >= PI) or (previous_phase < TAU and current_phase >= TAU):
+			play_footstep(speed)
+
+		was_moving = true
 	else:
+		# Play stop sound when transitioning from moving to stopped
+		if was_moving and player.is_on_floor():
+			play_footstep(0.0)
+			was_moving = false
+
 		# Return to center
 		bob_time = 0
 		camera.position.y = lerp(camera.position.y, 0.0, 10.0 * delta)
@@ -149,6 +190,58 @@ func enable_manual_tilt() -> void:
 ## Disable manual tilting
 func disable_manual_tilt() -> void:
 	manual_tilt_enabled = false
+
+## Play footstep sound with pitch variation based on speed
+func play_footstep(speed: float) -> void:
+	if not footsteps_player or step_sounds.is_empty():
+		return
+
+	# Don't play if already playing (prevent overlap)
+	if footsteps_player.playing:
+		return
+
+	# Randomly select a step sound
+	var random_index = randi() % step_sounds.size()
+	footsteps_player.stream = step_sounds[random_index]
+
+	# Vary pitch based on speed (faster = higher pitch)
+	var speed_factor = clamp(speed / 10.0, 0.5, 1.5)
+	var pitch = lerp(STEP_PITCH_MIN, STEP_PITCH_MAX, speed_factor)
+	footsteps_player.pitch_scale = pitch
+
+	# Play the sound
+	footsteps_player.play()
+
+## Play landing sound (called from player states)
+func play_landing_sound(impact_velocity: float = 0.0) -> void:
+	if not footsteps_player or step_sounds.is_empty():
+		return
+
+	# Randomly select a step sound
+	var random_index = randi() % step_sounds.size()
+	footsteps_player.stream = step_sounds[random_index]
+
+	# Vary pitch based on impact velocity (harder landing = lower pitch)
+	var impact_factor = clamp(abs(impact_velocity) / 15.0, 0.0, 1.0)
+	var pitch = lerp(1.0, 0.7, impact_factor)
+	footsteps_player.pitch_scale = pitch
+
+	# Play the sound with slightly higher volume for landing
+	footsteps_player.play()
+
+## Play jump sound (called from player states)
+func play_jump_sound() -> void:
+	if not footsteps_player or not jump_sound:
+		return
+
+	# Set jump sound as the stream
+	footsteps_player.stream = jump_sound
+
+	# Slight pitch variation for variety
+	footsteps_player.pitch_scale = randf_range(0.95, 1.05)
+
+	# Play the sound
+	footsteps_player.play()
 
 ## Screen shake effect
 func shake(intensity: float, duration: float) -> void:

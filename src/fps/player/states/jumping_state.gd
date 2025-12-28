@@ -10,6 +10,10 @@ func enter() -> void:
 	player.is_crouch_toggled = false
 	player.set_normal_height()
 
+	# Play jump sound
+	if player.camera:
+		player.camera.play_jump_sound()
+
 func update(delta: float) -> String:
 	# Variable jump height - if jump released early, reduce upward velocity
 	if not Input.is_action_pressed("jump") and not jump_released and player.velocity.y > 0:

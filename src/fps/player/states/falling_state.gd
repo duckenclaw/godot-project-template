@@ -31,6 +31,10 @@ func update(delta: float) -> String:
 
 	# Check if landed
 	if player.is_on_floor():
+		# Play landing sound based on impact velocity
+		if player.camera:
+			player.camera.play_landing_sound(player.velocity.y)
+
 		var input_dir = player.get_input_direction()
 		if input_dir.length() > 0:
 			return "MovingState"

@@ -24,9 +24,9 @@ extends Resource
 @export var wallrun_jump_velocity: float = 8.0
 @export var wallrun_jump_horizontal_velocity: float = 5.0
 @export var wallrun_jump_forward_boost: float = 3.0  # Forward momentum when jumping off wall
-@export var wallrun_speed_decay: float = 3.0  # Speed decrease per second
-@export var wallrun_gravity_increase: float = 8.0  # Gravity increase per second
-@export var wallrun_min_speed: float = 2.0  # Minimum wallrun speed before falling
+@export var wallrun_speed_decay: float = 2.0  # Speed decrease per second
+@export var wallrun_gravity_increase: float = 3.0  # Gravity increase per second
+@export var wallrun_min_speed: float = 1.0  # Minimum wallrun speed before falling
 
 # Physics
 @export var gravity: float = 20.0
@@ -38,7 +38,7 @@ extends Resource
 @export var mouse_sensitivity: float = 0.002
 @export var tilt_angle: float = 10.0
 @export var tilt_speed: float = 5.0
-@export var tilt_shift: float = 0.75  # Horizontal camera shift when tilting
+@export var tilt_shift: float = 1.0  # Horizontal camera shift when tilting
 @export var base_fov: float = 80.0
 @export var max_fov: float = 120.0
 @export var fov_speed_threshold: float = 8.0

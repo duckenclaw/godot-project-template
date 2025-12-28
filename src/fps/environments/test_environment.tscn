@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://yy8qdtf7sruo"]
+[gd_scene load_steps=6 format=3 uid="uid://yy8qdtf7sruo"]
 
 [ext_resource type="PackedScene" uid="uid://bamwgf5q2laml" path="res://src/fps/objects/floor.tscn" id="1_8yvgt"]
 [ext_resource type="PackedScene" uid="uid://bqymmfnxiyvhu" path="res://src/fps/objects/long_wall.tscn" id="1_txgp2"]
 [ext_resource type="PackedScene" uid="uid://b6uoyu8mg70hb" path="res://src/fps/objects/wall.tscn" id="2_cixlx"]
 [ext_resource type="PackedScene" uid="uid://bdyjg36f8vtk5" path="res://src/fps/objects/platform.tscn" id="4_gt1kl"]
+[ext_resource type="PackedScene" uid="uid://bqdwcp5vs7wc2" path="res://src/fps/objects/ramp.tscn" id="5_4l2oo"]
 
 [node name="TestEnvironment" type="Node3D" unique_id=799669179]
 
@@ -13,10 +14,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 [node name="LongWall2" parent="." unique_id=1720505796 instance=ExtResource("1_txgp2")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -10, 0, 0)
 
+[node name="LongWall3" parent="." unique_id=806489591 instance=ExtResource("1_txgp2")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -10, 3, 0)
+
 [node name="Floor" parent="." unique_id=906295620 instance=ExtResource("1_8yvgt")]
 
 [node name="Wall" parent="." unique_id=1049148951 instance=ExtResource("2_cixlx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
 
 [node name="Platform" parent="." unique_id=912214006 instance=ExtResource("4_gt1kl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1.75, 0)
+
+[node name="Ramp" parent="." unique_id=1375148880 instance=ExtResource("5_4l2oo")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 10, 0, 3)
+
+[node name="Ramp2" parent="." unique_id=632302557 instance=ExtResource("5_4l2oo")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9, 0, 7)

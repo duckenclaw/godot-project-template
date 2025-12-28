@@ -16,6 +16,10 @@ func enter() -> void:
 	# Set dash velocity
 	player.velocity = dash_direction * player.config.dash_speed
 
+	# Play jump sound
+	if player.camera:
+		player.camera.play_jump_sound()
+
 func update(delta: float) -> String:
 	dash_timer -= delta
 
