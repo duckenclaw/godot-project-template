@@ -5,7 +5,12 @@ extends State
 var coyote_timer: float = 0.0
 
 func enter() -> void:
-	coyote_timer = player.config.coyote_time
+	# Only apply coyote time if not falling from a jump
+	if player.is_falling_from_jump:
+		coyote_timer = 0.0
+		player.is_falling_from_jump = false
+	else:
+		coyote_timer = player.config.coyote_time
 	player.set_normal_height()
 
 func update(delta: float) -> String:

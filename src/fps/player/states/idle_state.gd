@@ -33,7 +33,7 @@ func update(delta: float) -> String:
 		return "FallingState"
 
 	# Apply gravity and friction
-	player.velocity.y -= player.config.gravity * delta
+#	player.velocity.y -= player.config.gravity * delta
 	player.velocity.x = move_toward(player.velocity.x, 0, player.config.friction * delta)
 	player.velocity.z = move_toward(player.velocity.z, 0, player.config.friction * delta)
 

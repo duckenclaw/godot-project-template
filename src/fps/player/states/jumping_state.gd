@@ -26,6 +26,7 @@ func update(delta: float) -> String:
 
 	# Transition to falling when moving downward
 	if player.velocity.y < 0:
+		player.is_falling_from_jump = true
 		return "FallingState"
 
 	# Air movement

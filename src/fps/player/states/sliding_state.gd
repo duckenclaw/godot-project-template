@@ -8,6 +8,9 @@ func enter() -> void:
 	# Set slide height
 	player.set_slide_height()
 
+	# Disable manual camera tilting during slide
+	player.camera.disable_manual_tilt()
+
 	# Get horizontal velocity direction
 	var horizontal_velocity = Vector3(player.velocity.x, 0, player.velocity.z)
 
@@ -62,12 +65,14 @@ func update(delta: float) -> String:
 	player.velocity.z = slide_direction.z * new_speed
 
 	# Apply gravity
-	player.velocity.y -= player.config.gravity * delta
+#	player.velocity.y -= player.config.gravity * delta
 
 	player.move_and_slide()
 
 	return ""
 
 func exit() -> void:
+	# Re-enable manual camera tilting
+	player.camera.enable_manual_tilt()
+
 	# Don't restore height here - let the next state handle it
-	pass

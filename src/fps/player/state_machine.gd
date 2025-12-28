@@ -54,6 +54,8 @@ func transition_to(state_name: String) -> void:
 		current_state.exit()
 
 	current_state = next_state
+	print("transitioning to state: " + get_current_state_name())
+	print(owner.global_rotation)
 	current_state.enter()
 
 ## Get the current state name

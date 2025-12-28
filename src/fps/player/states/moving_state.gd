@@ -74,7 +74,7 @@ func update(delta: float) -> String:
 	player.velocity.z = move_toward(player.velocity.z, target_velocity.z, player.config.acceleration * delta)
 
 	# Apply gravity
-	player.velocity.y -= player.config.gravity * delta
+#	player.velocity.y -= player.config.gravity * delta
 
 	player.move_and_slide()
 

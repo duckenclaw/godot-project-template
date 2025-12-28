@@ -13,7 +13,7 @@ extends Resource
 # Jump settings
 @export var jump_velocity: float = 6.0
 @export var min_jump_velocity: float = 3.0
-@export var coyote_time: float = 0.15
+@export var coyote_time: float = 10.15
 
 # Dash settings
 @export var dash_speed: float = 15.0
@@ -36,11 +36,11 @@ extends Resource
 
 # Camera settings
 @export var mouse_sensitivity: float = 0.002
-@export var tilt_angle: float = 15.0
+@export var tilt_angle: float = 10.0
 @export var tilt_speed: float = 5.0
-@export var tilt_shift: float = 0.5  # Horizontal camera shift when tilting
-@export var base_fov: float = 75.0
-@export var max_fov: float = 90.0
+@export var tilt_shift: float = 0.75  # Horizontal camera shift when tilting
+@export var base_fov: float = 80.0
+@export var max_fov: float = 120.0
 @export var fov_speed_threshold: float = 8.0
 
 # Head bobbing

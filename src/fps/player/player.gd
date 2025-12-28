@@ -33,6 +33,9 @@ var crouch_pressed: bool = false
 # Crouch toggle state
 var is_crouch_toggled: bool = false
 
+# Track if currently falling from a jump (for coyote time)
+var is_falling_from_jump: bool = false
+
 # Game state
 var is_paused: bool = false
 
@@ -149,12 +152,12 @@ func setup_wallrun_raycasts() -> void:
 	# Right raycast
 	wallrun_raycast_right.target_position = Vector3(1.0, 0, 0)
 	wallrun_raycast_right.enabled = true
-	camera_pivot.add_child(wallrun_raycast_right)
+	add_child(wallrun_raycast_right)
 
 	# Left raycast
 	wallrun_raycast_left.target_position = Vector3(-1.0, 0, 0)
 	wallrun_raycast_left.enabled = true
-	camera_pivot.add_child(wallrun_raycast_left)
+	add_child(wallrun_raycast_left)
 
 ## Check if player can wallrun
 func can_wallrun() -> bool:

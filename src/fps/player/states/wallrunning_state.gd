@@ -26,6 +26,9 @@ func enter() -> void:
 	player.velocity = wallrun_direction * current_wallrun_speed
 	player.velocity.y = 0
 
+	# Set camera tilt based on which side the wall is on
+	update_camera_tilt()
+
 func update(delta: float) -> String:
 	# Check for jump off wall
 	if player.jump_pressed:
@@ -64,6 +67,9 @@ func update(delta: float) -> String:
 	wallrun_direction = forward - wall_normal * forward.dot(wall_normal)
 	wallrun_direction = wallrun_direction.normalized()
 
+	# Update camera tilt
+	update_camera_tilt()
+
 	# Move along wall with decreasing speed
 	player.velocity.x = wallrun_direction.x * current_wallrun_speed
 	player.velocity.z = wallrun_direction.z * current_wallrun_speed
@@ -76,4 +82,15 @@ func update(delta: float) -> String:
 	return ""
 
 func exit() -> void:
-	pass
+	# Clear camera tilt override when exiting wallrun
+	player.camera.clear_tilt_override()
+
+## Update camera tilt based on which side the wall is on
+func update_camera_tilt() -> void:
+	# Determine which side the wall is on
+	if player.wallrun_raycast_right.is_colliding():
+		# Wall is on the right, tilt left (away from wall)
+		player.camera.set_tilt_override(player.config.tilt_angle)
+	elif player.wallrun_raycast_left.is_colliding():
+		# Wall is on the left, tilt right (away from wall)
+		player.camera.set_tilt_override(-player.config.tilt_angle)
