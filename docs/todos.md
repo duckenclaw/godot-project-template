@@ -1,0 +1,16 @@
+# fps
+- [x] idle state
+- [x] moving state
+- [x] crouching state
+- [x] jumping state
+- [x] falling state
+- [x] sliding state
+- [x] wallruning state
+- [x] dashing state
+- [x] camera tilt
+- [ ] screen shake
+- [ ] moving objects through "interact"
+- [ ] equipping items
+- [ ] inventory
+- [ ] dialogic addon integration
+- [ ] hands model and animations

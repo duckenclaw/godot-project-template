@@ -1,102 +1,117 @@
 extends State
-class_name WallrunningState
 
 ## Wallrunning state - player runs along walls
-## Note: This is a basic implementation that would need additional wall detection
 
-var wallrun_timer: float = 0.0
-var max_wallrun_time: float = 5.0
-var wallrun_speed: float = 10.0
-var wallrun_speed_multiplier: float = 0.75
 var wall_normal: Vector3
 var wallrun_direction: Vector3
+var current_wallrun_speed: float
+var current_gravity: float
+var step_timer: float = 0.0
+const WALLRUN_STEP_INTERVAL: float = 0.1  # Time between steps while wallrunning
 
-func enter():
-	print("Entering Wallrunning state")
-	wallrun_timer = max_wallrun_time
-	
-	# TODO: Detect wall and calculate wall normal and run direction
-	# For now, use placeholder values
-	
-	wall_normal = player.get_wall_normal() 
-	print("Wall normal: ", wall_normal)
-	wallrun_direction = calculate_wallrun_direction()
-	print("Wallrun direction: ", wallrun_direction)
-	wallrun_speed = player.move_speed * wallrun_speed_multiplier
-	
-	
-	# Add camera shake for wallrun start
-	if player and player.camera:
-		player.camera.add_camera_shake(0.1, 0.2)
+func enter() -> void:
+	player.set_normal_height()
 
-func exit():
-	pass
+	# Get wall normal from raycast
+	wall_normal = player.get_wallrun_normal()
 
-func physics_update(delta: float):
-	wallrun_timer -= delta
-	
-	# End wallrun when timer expires or player releases movement
-	var input_direction = player.get_movement_input_direction()
-	if !player.is_on_wall_only() or input_direction == Vector3.ZERO:
-		transition_to("falling")
-		return
-	
+	# Calculate wallrun direction (perpendicular to wall normal)
+	var forward = -player.camera_pivot.global_transform.basis.z
+	wallrun_direction = forward - wall_normal * forward.dot(wall_normal)
+	wallrun_direction = wallrun_direction.normalized()
+
+	# Initialize wallrun parameters
+	current_wallrun_speed = player.config.wallrun_speed
+	current_gravity = player.config.wallrun_gravity
+
+	# Set initial wallrun velocity
+	player.velocity = wallrun_direction * current_wallrun_speed
+	player.velocity.y = 0
+
+	# Reset step timer
+	step_timer = 0.0
+
+	# Play initial footstep sound when starting wallrun
+	if player.camera:
+		player.camera.play_footstep(current_wallrun_speed)
+
+	# Set camera tilt based on which side the wall is on
+	update_camera_tilt()
+
+func update(delta: float) -> String:
 	# Check for jump off wall
-	if (player.can_jump() and Input.is_action_just_pressed("jump")):
-		# Jump away from wall
-		player.velocity.y = player.jump_velocity
-		
-		# Calculate jump direction based on wall normal and camera direction
-		var camera_forward = -player.camera_pivot.global_transform.basis.z
-		camera_forward.y = 0  # Keep horizontal
-		camera_forward = camera_forward.normalized()
-		
-		# Blend wall normal with camera direction for more intuitive wall jumping
-		var wall_push = wall_normal * 0.6  # Push away from wall (60%)
-		var camera_influence = camera_forward * 0.4  # Follow camera direction (40%)
-		var jump_away_velocity = (wall_push + camera_influence).normalized() * player.move_speed * 1.2
-		
-		player.set_horizontal_velocity(jump_away_velocity)
-		player.jump_buffer_time = 0
-		player.coyote_time = 0
-		transition_to("jumping")
-		return
-	
-	var wallrun_velocity = wallrun_direction * wallrun_speed
-	player.set_horizontal_velocity(wallrun_velocity)
-	
-	# Slight upward force to counteract gravity
-	player.velocity.y = max(player.velocity.y, -2.0)
+	if player.jump_pressed:
+		# Jump away from wall while preserving forward momentum
+		# Blend wall normal (away) with wallrun direction (forward)
+		var away_from_wall = wall_normal * player.config.wallrun_jump_horizontal_velocity
+		var forward_momentum = wallrun_direction * player.config.wallrun_jump_forward_boost
 
-func get_state_name() -> String:
-	return "wallrunning"
+		# Combine directions for diagonal jump
+		var jump_direction = (away_from_wall + forward_momentum).normalized()
+		var total_horizontal_speed = player.config.wallrun_jump_horizontal_velocity + player.config.wallrun_jump_forward_boost
 
-func calculate_wallrun_direction() -> Vector3:
-	if not player:
-		return Vector3.FORWARD
-	
-	# Get the player's horizontal velocity (ignore Y component)
-	var horizontal_velocity = Vector3(player.velocity.x, 0, player.velocity.z)
-	
-	# If player has no horizontal velocity, use input direction
-	if horizontal_velocity.length() < 0.1:
-		horizontal_velocity = player.get_movement_input_direction()
-		if horizontal_velocity.length() < 0.1:
-			# Fallback: use camera forward direction
-			horizontal_velocity = -player.camera_pivot.global_transform.basis.z
-			horizontal_velocity.y = 0
-			horizontal_velocity = horizontal_velocity.normalized()
-	
-	# Calculate the direction parallel to the wall
-	# This is done by projecting the velocity onto the wall plane
-	# Wall plane is perpendicular to wall_normal
-	var wall_parallel_direction = horizontal_velocity - wall_normal * horizontal_velocity.dot(wall_normal)
-	wall_parallel_direction = wall_parallel_direction.normalized()
-	
-	# Ensure we're running forward along the wall (not backward)
-	# Check if the calculated direction aligns with the original movement intent
-	var original_direction = horizontal_velocity.normalized()
-	if wall_parallel_direction.dot(original_direction) < 0:
-		wall_parallel_direction = -wall_parallel_direction
-	
-	return wall_parallel_direction
+		player.velocity = jump_direction * total_horizontal_speed
+		player.velocity.y = player.config.wallrun_jump_velocity
+
+		# Play jump sound
+		if player.camera:
+			player.camera.play_jump_sound()
+
+		return "JumpingState"
+
+	# Decrease horizontal speed over time
+	current_wallrun_speed -= player.config.wallrun_speed_decay * delta
+	current_wallrun_speed = max(current_wallrun_speed, player.config.wallrun_min_speed)
+
+	# Increase gravity over time (fall faster as wallrun continues)
+	current_gravity += player.config.wallrun_gravity_increase * delta
+	current_gravity = min(current_gravity, player.config.gravity)  # Cap at normal gravity
+
+	# Check if speed is too low to continue wallrunning
+	if current_wallrun_speed <= player.config.wallrun_min_speed:
+		return "FallingState"
+
+	# Check if no longer touching wall
+	if not player.can_wallrun():
+		return "FallingState"
+
+	# Update wall normal and direction
+	wall_normal = player.get_wallrun_normal()
+	var forward = -player.camera_pivot.global_transform.basis.z
+	wallrun_direction = forward - wall_normal * forward.dot(wall_normal)
+	wallrun_direction = wallrun_direction.normalized()
+
+	# Update camera tilt
+	update_camera_tilt()
+
+	# Move along wall with decreasing speed
+	player.velocity.x = wallrun_direction.x * current_wallrun_speed
+	player.velocity.z = wallrun_direction.z * current_wallrun_speed
+
+	# Apply increasing gravity (slide down faster over time)
+	player.velocity.y -= current_gravity * delta
+
+	# Update step timer and play footsteps
+	step_timer += delta
+	if step_timer >= WALLRUN_STEP_INTERVAL:
+		step_timer = 0.0
+		if player.camera:
+			player.camera.play_footstep(current_wallrun_speed)
+
+	player.move_and_slide()
+
+	return ""
+
+func exit() -> void:
+	# Clear camera tilt override when exiting wallrun
+	player.camera.clear_tilt_override()
+
+## Update camera tilt based on which side the wall is on
+func update_camera_tilt() -> void:
+	# Determine which side the wall is on
+	if player.wallrun_raycast_right.is_colliding():
+		# Wall is on the right, tilt left (away from wall)
+		player.camera.set_tilt_override(player.config.tilt_angle)
+	elif player.wallrun_raycast_left.is_colliding():
+		# Wall is on the left, tilt right (away from wall)
+		player.camera.set_tilt_override(-player.config.tilt_angle)

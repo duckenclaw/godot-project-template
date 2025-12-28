@@ -1,181 +1,249 @@
-extends Camera3D
 class_name CameraController
+extends Node3D
 
-## Camera controller for third-person character with walking sway, shake, and FOV effects
+## Camera controller - handles camera movement, rotation, tilting, head bobbing, and FOV
 
-@export_group("Camera Settings")
-@export var mouse_sensitivity: float = 0.002
-@export var min_pitch: float = -89.0
-@export var max_pitch: float = 89.0
-@export var base_fov: float = 90.0
+@onready var camera: Camera3D = $Camera3D
+@onready var player: CharacterBody3D = owner
 
-@export_group("Walking Sway")
-@export var sway_enabled: bool = true
-@export var sway_intensity: float = 0.02
-@export var sway_frequency: float = 2.0
-@export var vertical_sway_intensity: float = 0.01
-
-@export_group("Camera Shake")
-@export var shake_enabled: bool = true
-@export var shake_decay: float = 5.0
-
-@export_group("Speed FOV")
-@export var speed_fov_enabled: bool = true
-@export var max_speed_fov_bonus: float = 10.0
-@export var speed_fov_smoothing: float = 5.0
-
-@export_group("Head Tilt")
-@export var tilt_enabled: bool = true
-@export var max_tilt_angle: float = 15.0  # Maximum tilt angle in degrees
-@export var tilt_position_offset: float = 0.1  # Horizontal offset when tilting
-@export var tilt_smoothing: float = 8.0  # How fast tilt transitions
+var config: PlayerConfig
 
 # Camera rotation
-var pitch: float = 0.0
-var yaw: float = 0.0
-var target_tilt_angle: float = 0.0
-var current_tilt_angle: float = 0.0
-var target_tilt_position: Vector3 = Vector3.ZERO
-var current_tilt_position: Vector3 = Vector3.ZERO
+var rotation_x: float = 0.0
+var rotation_y: float = 0.0
 
-# Walking sway
-var sway_time: float = 0.0
-var base_position: Vector3
+# Head tilt
+var current_tilt: float = 0.0
+var target_tilt: float = 0.0
+var tilt_override_active: bool = false
+var tilt_override_angle: float = 0.0
+var manual_tilt_enabled: bool = true
 
-# Camera shake
-var shake_intensity: float = 0.0
-var shake_timer: float = 0.0
+# Head bobbing
+var bob_time: float = 0.0
+var last_bob_phase: float = 0.0
+var was_moving: bool = false
 
-# Speed FOV
-var current_speed: float = 0.0
-var target_fov: float
+# Footsteps
+var footsteps_player: AudioStreamPlayer3D = null
+var step_sounds: Array[AudioStream] = []
+var jump_sound: AudioStream = null
+const STEP_PITCH_MIN: float = 0.9
+const STEP_PITCH_MAX: float = 1.1
 
-@onready var player: CharacterBody3D = get_tree().get_first_node_in_group("player")
-@onready var camera_tilt: Node3D = get_parent()
-@onready var camera_pivot: Node3D = camera_tilt.get_parent()
+# FOV
+var current_fov: float = 75.0
 
-func _ready():
-	base_position = position
-	target_fov = base_fov
-	fov = base_fov
-	
+func _ready() -> void:
 	# Capture mouse
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-func _input(event: InputEvent):
-	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		handle_mouse_look(event.relative)
+	# Get config from player
+	if player:
+		config = player.config
+		if config:
+			current_fov = config.base_fov
+			camera.fov = current_fov
 
-	# Handle tilt input
-	if tilt_enabled:
-		handle_tilt_input()
+	# Get footsteps player reference
+	if player and player.has_node("FootstepsPlayer"):
+		footsteps_player = player.get_node("FootstepsPlayer")
 
-func _process(delta: float):
-	update_camera_effects(delta)
-	if tilt_enabled:
-		update_tilt(delta)
+	# Load multiple step sounds
+	step_sounds = [
+		load("res://assets/sounds/steps/step0.wav"),
+		load("res://assets/sounds/steps/step1.wav"),
+		load("res://assets/sounds/steps/step2.wav")
+	]
 
-func handle_mouse_look(relative_motion: Vector2):
-	# Horizontal rotation (yaw) - rotate the camera pivot
-	yaw -= relative_motion.x * mouse_sensitivity
-	camera_pivot.rotation.y = yaw
-	
-	# Vertical rotation (pitch) - rotate the camera itself
-	pitch -= relative_motion.y * mouse_sensitivity
-	pitch = clamp(pitch, deg_to_rad(min_pitch), deg_to_rad(max_pitch))
-	rotation.x = pitch
+	# Load jump sound
+	jump_sound = load("res://assets/sounds/jump.wav")
 
-func update_camera_effects(delta: float):
-	if not player:
+func _input(event: InputEvent) -> void:
+	if not config:
 		return
-	
-	var velocity = player.velocity
-	current_speed = velocity.length()
-	
-	# Calculate final position with all effects
-	var final_position = base_position
-	
-	# Walking sway effect
-	if sway_enabled and current_speed > 0.1:
-		final_position += calculate_walking_sway(delta, current_speed)
-	
-	# Camera shake effect
-	if shake_enabled and shake_intensity > 0:
-		final_position += calculate_camera_shake(delta)
-	
-	position = final_position
-	
-	# Speed-based FOV changes
-	if speed_fov_enabled:
-		update_speed_fov(delta, current_speed)
 
-func calculate_walking_sway(delta: float, speed: float) -> Vector3:
-	sway_time += delta * sway_frequency * (speed / 5.0)  # Adjust frequency based on speed
-	
-	var horizontal_sway = sin(sway_time) * sway_intensity
-	var vertical_sway = sin(sway_time * 2.0) * vertical_sway_intensity
-	
-	# Apply sway relative to camera's local axes
-	var sway_offset = Vector3.ZERO
-	sway_offset += transform.basis.x * horizontal_sway
-	sway_offset += transform.basis.y * vertical_sway
-	
-	return sway_offset
+	# Don't process input when paused
+	if player and player.is_paused:
+		return
 
-func calculate_camera_shake(delta: float) -> Vector3:
-	shake_timer -= delta
-	
-	if shake_timer <= 0:
-		shake_intensity = max(0, shake_intensity - shake_decay * delta)
-		if shake_intensity <= 0:
-			return Vector3.ZERO
-	
-	var shake_offset = Vector3(
-		randf_range(-shake_intensity, shake_intensity),
-		randf_range(-shake_intensity, shake_intensity),
-		randf_range(-shake_intensity, shake_intensity)
-	)
-	
-	return shake_offset
+	# Handle mouse movement
+	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		rotate_camera(event.relative)
 
-func update_speed_fov(delta: float, speed: float):
-	# Calculate target FOV based on speed
-	var speed_ratio = clamp(speed / 20.0, 0.0, 1.0)  # Normalize speed (20 is max expected speed)
-	target_fov = base_fov + (max_speed_fov_bonus * speed_ratio)
-	
-	# Smoothly interpolate to target FOV
-	fov = lerp(fov, target_fov, speed_fov_smoothing * delta)
+func _process(delta: float) -> void:
+	if not config:
+		return
 
-func add_camera_shake(intensity: float, duration: float = 0.5):
-	shake_intensity = max(shake_intensity, intensity)
-	shake_timer = max(shake_timer, duration)
+	# Don't process when paused
+	if player and player.is_paused:
+		return
 
-func set_mouse_sensitivity(new_sensitivity: float):
-	mouse_sensitivity = new_sensitivity
+	# Update tilt
+	update_tilt(delta)
 
-func toggle_mouse_capture():
-	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	# Update FOV based on speed
+	update_fov(delta)
+
+## Rotate camera based on mouse movement
+func rotate_camera(relative: Vector2) -> void:
+	# Horizontal rotation (Y axis) - rotate the player body
+	rotation_y -= relative.x * config.mouse_sensitivity
+	player.rotation.y = rotation_y
+
+	# Vertical rotation (X axis) - rotate the camera
+	rotation_x -= relative.y * config.mouse_sensitivity
+	rotation_x = clamp(rotation_x, -PI/2, PI/2)
+	camera.rotation.x = rotation_x
+
+## Update head tilt based on input
+func update_tilt(delta: float) -> void:
+	# Check if tilt is being overridden by a state
+	if tilt_override_active:
+		target_tilt = tilt_override_angle
+		# Calculate horizontal offset based on override angle
+		var tilt_input = tilt_override_angle / deg_to_rad(config.tilt_angle)
+		var target_x_offset = -tilt_input * config.tilt_shift
+		camera.position.x = lerp(camera.position.x, target_x_offset, config.tilt_speed * delta)
+	elif manual_tilt_enabled:
+		# Get tilt input only if manual tilting is enabled
+		var tilt_input = 0.0
+		if Input.is_action_pressed("tilt_left"):
+			tilt_input = 1.0
+		elif Input.is_action_pressed("tilt_right"):
+			tilt_input = -1.0
+
+		# Update target tilt
+		target_tilt = tilt_input * deg_to_rad(config.tilt_angle)
+
+		# Move camera horizontally based on tilt (left tilt = shift left, right tilt = shift right)
+		var target_x_offset = -tilt_input * config.tilt_shift
+		camera.position.x = lerp(camera.position.x, target_x_offset, config.tilt_speed * delta)
 	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		# Manual tilt disabled, return to neutral
+		target_tilt = 0.0
+		camera.position.x = lerp(camera.position.x, 0.0, config.tilt_speed * delta)
 
-func handle_tilt_input():
-	# Check tilt input
-	if Input.is_action_pressed("tilt_left"):
-		target_tilt_angle = max_tilt_angle
-		target_tilt_position = Vector3(-tilt_position_offset, 0, 0)
-	elif Input.is_action_pressed("tilt_right"):
-		target_tilt_angle = -max_tilt_angle
-		target_tilt_position = Vector3(tilt_position_offset, 0, 0)
+	# Smoothly interpolate to target tilt
+	current_tilt = lerp(current_tilt, target_tilt, config.tilt_speed * delta)
+	camera.rotation.z = current_tilt
+
+## Update head bobbing when moving
+func update_movement(speed: float, delta: float) -> void:
+	var is_moving = speed > 0.1 and player.is_on_floor()
+
+	if is_moving:
+		var previous_bob_time = bob_time
+		bob_time += delta * config.bob_frequency * speed
+		var bob_offset = sin(bob_time) * config.bob_amplitude
+		camera.position.y = bob_offset
+
+		# Detect footsteps - trigger when sine wave crosses from negative to positive (bottom of bob)
+		var current_phase = fmod(bob_time, TAU)
+		var previous_phase = fmod(previous_bob_time, TAU)
+
+		# Check if we crossed PI (bottom of the step cycle)
+		if (previous_phase < PI and current_phase >= PI) or (previous_phase < TAU and current_phase >= TAU):
+			play_footstep(speed)
+
+		was_moving = true
 	else:
-		target_tilt_angle = 0.0
-		target_tilt_position = Vector3.ZERO
+		# Play stop sound when transitioning from moving to stopped
+		if was_moving and player.is_on_floor():
+			play_footstep(0.0)
+			was_moving = false
 
-func update_tilt(delta: float):
-	# Smoothly interpolate tilt angle
-	current_tilt_angle = lerp(current_tilt_angle, target_tilt_angle, tilt_smoothing * delta)
-	camera_tilt.rotation.z = deg_to_rad(current_tilt_angle)
+		# Return to center
+		bob_time = 0
+		camera.position.y = lerp(camera.position.y, 0.0, 10.0 * delta)
 
-	# Smoothly interpolate tilt position offset
-	current_tilt_position = current_tilt_position.lerp(target_tilt_position, tilt_smoothing * delta)
-	camera_tilt.position = current_tilt_position
+## Update FOV based on player speed
+func update_fov(delta: float) -> void:
+	var horizontal_velocity = Vector3(player.velocity.x, 0, player.velocity.z)
+	var speed = horizontal_velocity.length()
+
+	# Increase FOV when moving fast
+	var target_fov = config.base_fov
+	if speed > config.fov_speed_threshold:
+		var fov_increase = (speed - config.fov_speed_threshold) / config.fov_speed_threshold
+		fov_increase = clamp(fov_increase, 0.0, 1.0)
+		target_fov = lerp(config.base_fov, config.max_fov, fov_increase)
+
+	# Smoothly interpolate FOV
+	current_fov = lerp(current_fov, target_fov, 5.0 * delta)
+	camera.fov = current_fov
+
+## Set tilt override (used by states like wallrunning)
+func set_tilt_override(angle_degrees: float) -> void:
+	tilt_override_active = true
+	tilt_override_angle = deg_to_rad(angle_degrees)
+
+## Clear tilt override and return to normal behavior
+func clear_tilt_override() -> void:
+	tilt_override_active = false
+	tilt_override_angle = 0.0
+
+## Enable manual tilting (default)
+func enable_manual_tilt() -> void:
+	manual_tilt_enabled = true
+
+## Disable manual tilting
+func disable_manual_tilt() -> void:
+	manual_tilt_enabled = false
+
+## Play footstep sound with pitch variation based on speed
+func play_footstep(speed: float) -> void:
+	if not footsteps_player or step_sounds.is_empty():
+		return
+
+	# Don't play if already playing (prevent overlap)
+	if footsteps_player.playing:
+		return
+
+	# Randomly select a step sound
+	var random_index = randi() % step_sounds.size()
+	footsteps_player.stream = step_sounds[random_index]
+
+	# Vary pitch based on speed (faster = higher pitch)
+	var speed_factor = clamp(speed / 10.0, 0.5, 1.5)
+	var pitch = lerp(STEP_PITCH_MIN, STEP_PITCH_MAX, speed_factor)
+	footsteps_player.pitch_scale = pitch
+
+	# Play the sound
+	footsteps_player.play()
+
+## Play landing sound (called from player states)
+func play_landing_sound(impact_velocity: float = 0.0) -> void:
+	if not footsteps_player or step_sounds.is_empty():
+		return
+
+	# Randomly select a step sound
+	var random_index = randi() % step_sounds.size()
+	footsteps_player.stream = step_sounds[random_index]
+
+	# Vary pitch based on impact velocity (harder landing = lower pitch)
+	var impact_factor = clamp(abs(impact_velocity) / 15.0, 0.0, 1.0)
+	var pitch = lerp(1.0, 0.7, impact_factor)
+	footsteps_player.pitch_scale = pitch
+
+	# Play the sound with slightly higher volume for landing
+	footsteps_player.play()
+
+## Play jump sound (called from player states)
+func play_jump_sound() -> void:
+	if not footsteps_player or not jump_sound:
+		return
+
+	# Set jump sound as the stream
+	footsteps_player.stream = jump_sound
+
+	# Slight pitch variation for variety
+	footsteps_player.pitch_scale = randf_range(0.95, 1.05)
+
+	# Play the sound
+	footsteps_player.play()
+
+## Screen shake effect
+func shake(intensity: float, duration: float) -> void:
+	# TODO: Implement screen shake
+	pass

@@ -1,18 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://ckxpufbpphq1d"]
+[gd_scene load_steps=3 format=3 uid="uid://bqdwcp5vs7wc2"]
 
-[sub_resource type="PrismMesh" id="PrismMesh_hj5uv"]
-left_to_right = 1.0
-size = Vector3(7.5, 5, 3)
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_lu8k8"]
+points = PackedVector3Array(-1.5, 1, 0.5, 1.5, -1, 0.5, -1.5, 1, -0.5, -1.5, -1, 0.5, 1.5, -1, -0.5, -1.5, -1, -0.5)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_hj5uv"]
-points = PackedVector3Array(3.7499995, 2.5, 1.5, 3.7499995, 2.5, -1.5, -3.75, -2.5, 1.5, 3.7499995, -2.5, 1.5, 3.7499995, -2.5, -1.5, -3.75, -2.5, -1.5)
+[sub_resource type="PrismMesh" id="PrismMesh_gt1kl"]
+left_to_right = 0.0
+size = Vector3(3, 2, 1)
 
-[node name="Ramp" type="StaticBody3D"]
+[node name="Ramp" type="StaticBody3D" unique_id=1375148880]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
-mesh = SubResource("PrismMesh_hj5uv")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1860763555]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("ConvexPolygonShape3D_lu8k8")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
-shape = SubResource("ConvexPolygonShape3D_hj5uv")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1954845314]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("PrismMesh_gt1kl")

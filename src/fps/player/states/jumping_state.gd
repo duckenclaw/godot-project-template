@@ -1,43 +1,52 @@
 extends State
-class_name JumpingState
 
-## Jumping state - player is ascending from a jump
+## Jumping state - handles jump with variable height and coyote time
 
-var jump_hold_time: float = 0.0
-var max_jump_hold_time: float = 0.3
-var jump_hold_bonus: float = 0.5
+var jump_released: bool = false
 
-func enter():
-	print("Entering Jumping state")
-	jump_hold_time = 0.0
+func enter() -> void:
+	jump_released = false
+	player.velocity.y = player.config.jump_velocity
+	player.is_crouch_toggled = false
+	player.set_normal_height()
 
-func exit():
-	pass
+	# Play jump sound
+	if player.camera:
+		player.camera.play_jump_sound()
 
-func physics_update(delta: float):
-	if Input.is_action_pressed("jump") and jump_hold_time < max_jump_hold_time:
-		jump_hold_time += delta
-		# Apply additional upward force while holding jump
-		player.velocity.y += jump_hold_bonus * delta
-	
-	if player.is_on_wall_only():
-		transition_to("wallrunning")
-		return
-	
-	# Check if we're falling (reached peak of jump or released jump early)
-	if player.velocity.y <= 0:
-		transition_to("falling")
-		return
-	
-	# Handle horizontal movement while in air
-	var input_direction = player.get_movement_input_direction()
-	if input_direction != Vector3.ZERO:
-		var horizontal_velocity = player.get_horizontal_velocity()
-		var air_acceleration = 5.0  # Reduced air control
-		var target_velocity = input_direction * player.move_speed * 0.8  # Reduced air speed
-		
-		horizontal_velocity = horizontal_velocity.move_toward(target_velocity, air_acceleration * delta)
-		player.set_horizontal_velocity(horizontal_velocity)
+func update(delta: float) -> String:
+	# Variable jump height - if jump released early, reduce upward velocity
+	if not Input.is_action_pressed("jump") and not jump_released and player.velocity.y > 0:
+		player.velocity.y = max(player.velocity.y * 0.5, player.config.min_jump_velocity)
+		jump_released = true
 
-func get_state_name() -> String:
-	return "jumping"
+	# Check for dash
+	if player.dash_pressed:
+		return "DashingState"
+
+	# Check for wallrun
+#	if player.can_wallrun():
+#		return "WallrunningState"
+
+	# Transition to falling when moving downward
+	if player.velocity.y < 0:
+		player.is_falling_from_jump = true
+		return "FallingState"
+
+	# Air movement
+	var input_dir = player.get_input_direction()
+	if input_dir.length() > 0:
+		var direction = player.get_move_direction()
+		var target_velocity = direction * player.config.walk_speed
+		player.velocity.x = move_toward(player.velocity.x, target_velocity.x, player.config.air_acceleration * delta)
+		player.velocity.z = move_toward(player.velocity.z, target_velocity.z, player.config.air_acceleration * delta)
+
+	# Apply gravity
+	player.velocity.y -= player.config.gravity * delta
+
+	player.move_and_slide()
+
+	return ""
+
+func exit() -> void:
+	jump_released = false

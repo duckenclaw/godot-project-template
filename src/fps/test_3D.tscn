@@ -1,96 +1,26 @@
-[gd_scene load_steps=17 format=3 uid="uid://cl4nisuqrinr0"]
+[gd_scene load_steps=6 format=3 uid="uid://crk1dyw7mn53n"]
 
-[ext_resource type="PackedScene" uid="uid://bdp7yjeelx35w" path="res://src/3d/objects/upper_floor.tscn" id="1_4chky"]
-[ext_resource type="PackedScene" uid="uid://cst7vo0ldo7e8" path="res://src/3d/player/player_3d.tscn" id="1_ejecp"]
-[ext_resource type="PackedScene" uid="uid://bc6g7jvnoivix" path="res://src/3d/objects/dummy.tscn" id="1_hj5uv"]
-[ext_resource type="PackedScene" uid="uid://mx6n61adbbrq" path="res://src/3d/objects/door.tscn" id="2_igrfc"]
-[ext_resource type="PackedScene" uid="uid://bu6xqlb3th4wk" path="res://src/3d/objects/wall.tscn" id="2_tkq6y"]
-[ext_resource type="PackedScene" uid="uid://ckxpufbpphq1d" path="res://src/3d/objects/ramp.tscn" id="3_sey51"]
-[ext_resource type="Script" uid="uid://uibpx77bmaak" path="res://src/3d/npc/npc_base.gd" id="7_sey51"]
-[ext_resource type="Resource" uid="uid://dmafq6ugp7ebi" path="res://src/ui/dialog/test/test_dialog.tres" id="8_sey51"]
+[ext_resource type="PackedScene" uid="uid://yy8qdtf7sruo" path="res://src/fps/environments/test_environment.tscn" id="1_bww5v"]
+[ext_resource type="PackedScene" uid="uid://ct7eavw7p0ci3" path="res://src/fps/player/player.tscn" id="2_abjwo"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_1fhpf"]
-size = Vector3(25, 0.2, 25)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_1fhpf"]
-size = Vector3(25, 0.2, 25)
-
-[sub_resource type="Environment" id="Environment_1fhpf"]
+[sub_resource type="Environment" id="Environment_r6u00"]
 background_mode = 1
-background_color = Color(0.21181104, 0.56919724, 0.9082838, 1)
+background_color = Color(0.48828018, 0.7672112, 1, 1)
 
-[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_ejecp"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_alk16"]
 
-[sub_resource type="Compositor" id="Compositor_5cm31"]
+[sub_resource type="Compositor" id="Compositor_bww5v"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4chky"]
+[node name="Test3d" type="Node3D" unique_id=2099256127]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4chky"]
-albedo_color = Color(0.09293146, 0.79128015, 7.70092e-07, 1)
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=213483854]
+environment = SubResource("Environment_r6u00")
+camera_attributes = SubResource("CameraAttributesPractical_alk16")
+compositor = SubResource("Compositor_bww5v")
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_4chky"]
-material = SubResource("StandardMaterial3D_4chky")
+[node name="TestEnvironment" parent="." unique_id=799669179 instance=ExtResource("1_bww5v")]
 
-[node name="Test3d" type="Node3D" unique_id=949411491]
+[node name="Player" parent="." unique_id=1599086198 instance=ExtResource("2_abjwo")]
 
-[node name="Objects" type="Node3D" parent="." unique_id=1516586503]
-
-[node name="Floor" type="StaticBody3D" parent="Objects" unique_id=1825793747]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Floor" unique_id=1772370844]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-mesh = SubResource("BoxMesh_1fhpf")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Floor" unique_id=1648932556]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-shape = SubResource("BoxShape3D_1fhpf")
-
-[node name="UpperFloor" parent="Objects" unique_id=492747681 instance=ExtResource("1_4chky")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 4.7, -7.765)
-
-[node name="Wall" parent="Objects" unique_id=1499757709 instance=ExtResource("2_tkq6y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, -6)
-
-[node name="Wall2" parent="Objects" unique_id=668881330 instance=ExtResource("2_tkq6y")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8, 0, -2)
-
-[node name="Wall3" parent="Objects" unique_id=458092979 instance=ExtResource("2_tkq6y")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8, 5, -2)
-
-[node name="Wall4" parent="Objects" unique_id=1033760702 instance=ExtResource("2_tkq6y")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8, 5, 5.5)
-
-[node name="Ramp" parent="Objects" unique_id=512868815 instance=ExtResource("3_sey51")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -7.765)
-
-[node name="Dummy" parent="Objects" unique_id=638786627 instance=ExtResource("1_hj5uv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6, 0, 0)
-
-[node name="Door" parent="Objects" unique_id=1953469712 instance=ExtResource("2_igrfc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 0, 0)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1357275881]
-environment = SubResource("Environment_1fhpf")
-camera_attributes = SubResource("CameraAttributesPhysical_ejecp")
-compositor = SubResource("Compositor_5cm31")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="WorldEnvironment" unique_id=300281319]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -3)
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=426361912]
-transform = Transform3D(0.14644662, -0.8535533, 0.49999997, 0.49999997, 0.49999997, 0.70710677, -0.8535533, 0.14644662, 0.49999997, 0, 0, 0)
-
-[node name="Player3d" parent="." unique_id=93962622 instance=ExtResource("1_ejecp")]
-
-[node name="Neutral" type="CharacterBody3D" parent="." unique_id=213983837 groups=["character"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6926365, 0, 4.3090053)
-script = ExtResource("7_sey51")
-dialog = ExtResource("8_sey51")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Neutral" unique_id=2024308034]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shape = SubResource("CapsuleShape3D_4chky")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Neutral" unique_id=207304703]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("CapsuleMesh_4chky")
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=602512710]
+transform = Transform3D(0.14644662, 0.8535533, -0.49999997, -0.49999997, 0.49999997, 0.70710677, 0.8535533, 0.14644662, 0.49999997, 0, 7.2557898, 0)

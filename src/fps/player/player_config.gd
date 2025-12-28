@@ -1,76 +1,51 @@
-extends Resource
 class_name PlayerConfig
+extends Resource
 
-## Player configuration with stat system and calculated properties
-## Stats: might, fortitude, motorics
-## Calculated properties: weight, speed, jump_height, dash_length, sprint_multiplier
+## Player configuration resource containing all movement and camera settings
 
-@export var might: float = 10.0
-@export var fortitude: float = 10.0  
-@export var motorics: float = 10.0
-@export var willpower: float = 10.0
-@export var starting_weight: float = 70.02
-@export var story_flags: Array[String]
+# Movement speeds
+@export var walk_speed: float = 5.0
+@export var sprint_speed: float = 8.0
+@export var crouch_speed: float = 2.5
+@export var slide_speed: float = 10.0
+@export var wallrun_speed: float = 6.0
 
-# Calculated properties
-var weight: float:
-	get:
-		return starting_weight + ((fortitude * 10) + (might * 5))
+# Jump settings
+@export var jump_velocity: float = 6.0
+@export var min_jump_velocity: float = 3.0
+@export var coyote_time: float = 10.15
 
-var speed: float:
-	get:
-		return (motorics * 5) / (weight / 10 - might)
+# Dash settings
+@export var dash_speed: float = 15.0
+@export var dash_duration: float = 0.3
 
-var jump_height: float:
-	get:
-		return might * 1.5
+# Wallrun settings
+@export var wallrun_gravity: float = 2.0
+@export var wallrun_jump_velocity: float = 8.0
+@export var wallrun_jump_horizontal_velocity: float = 5.0
+@export var wallrun_jump_forward_boost: float = 3.0  # Forward momentum when jumping off wall
+@export var wallrun_speed_decay: float = 2.0  # Speed decrease per second
+@export var wallrun_gravity_increase: float = 3.0  # Gravity increase per second
+@export var wallrun_min_speed: float = 1.0  # Minimum wallrun speed before falling
 
-var dash_length: float:
-	get:
-		return motorics / 20
+# Physics
+@export var gravity: float = 20.0
+@export var acceleration: float = 50.0
+@export var friction: float = 50.0
+@export var air_acceleration: float = 15.0
 
-var sprint_multiplier: float:
-	get:
-		return 1 + (motorics * 0.25)
+# Camera settings
+@export var mouse_sensitivity: float = 0.002
+@export var tilt_angle: float = 10.0
+@export var tilt_speed: float = 5.0
+@export var tilt_shift: float = 1.0  # Horizontal camera shift when tilting
+@export var base_fov: float = 80.0
+@export var max_fov: float = 120.0
+@export var fov_speed_threshold: float = 8.0
 
-var max_health: float:
-	get:
-		return 35 + (5 * fortitude)
+# Head bobbing
+@export var bob_frequency: float = 2.0
+@export var bob_amplitude: float = 0.08
 
-var max_mana: float:
-	get:
-		return 25 + (5 * willpower)
-
-func _init(p_might: float = 10.0, p_fortitude: float = 10.0, p_motorics: float = 10.0, p_starting_weight: float = 70.0):
-	might = p_might
-	fortitude = p_fortitude
-	motorics = p_motorics
-	starting_weight = p_starting_weight
-
-func get_stats_summary() -> String:
-	return "Stats - Might: %.1f, Fortitude: %.1f, Motorics: %.1f\nCalculated - Weight: %.1f, Speed: %.1f, Jump: %.1f, Dash: %.1f, Sprint: %.2fx" % [
-		might, fortitude, motorics, weight, speed, jump_height, dash_length, sprint_multiplier
-	]
-
-# Story flag management functions
-func has_flag(flag: String) -> bool:
-	return story_flags.has(flag)
-
-func add_flag(flag: String) -> void:
-	if not story_flags.has(flag):
-		story_flags.append(flag)
-		print("Added story flag: " + flag)
-
-func remove_flag(flag: String) -> void:
-	if story_flags.has(flag):
-		story_flags.erase(flag)
-		print("Removed story flag: " + flag)
-
-func has_all_flags(flags: Array[String]) -> bool:
-	for flag in flags:
-		if not story_flags.has(flag):
-			return false
-	return true
-
-func get_flags_summary() -> String:
-	return "Story flags: " + str(story_flags)
+# Interaction
+@export var interact_distance: float = 3.0

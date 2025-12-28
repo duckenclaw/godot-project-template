@@ -1,54 +1,45 @@
 extends State
-class_name DashingState
 
-## Dashing state - player moves quickly in a direction for a short time
+## Dashing state - moves player in camera direction including vertically
 
 var dash_timer: float = 0.0
 var dash_direction: Vector3
-var dash_speed: float = 10.0
 
-func enter():
-	print("Entering Dashing state")
-	dash_timer = player.dash_distance if player else 1.0
-	print(dash_timer)
-	dash_direction = player.last_movement_direction if player else Vector3.FORWARD
-	
-	# Add camera shake for dash
-	if player and player.camera:
-		player.camera.add_camera_shake(0.15, 0.3)
-	
+func enter() -> void:
+	dash_timer = player.config.dash_duration
+	player.is_crouch_toggled = false
+	player.set_normal_height()
+
+	# Get dash direction from camera (including vertical component)
+	dash_direction = -player.camera_3d.global_transform.basis.z
+
 	# Set dash velocity
-	if player:
-		var dash_velocity = dash_direction * dash_speed
-		player.set_horizontal_velocity(dash_velocity)
+	player.velocity = dash_direction * player.config.dash_speed
 
-func exit():
-	pass
+	# Play jump sound
+	if player.camera:
+		player.camera.play_jump_sound()
 
-func physics_update(delta: float):
+func update(delta: float) -> String:
 	dash_timer -= delta
-	
+
 	# End dash when timer expires
 	if dash_timer <= 0:
-		# Transition based on current state
-		if not player.is_on_floor():
-			transition_to("falling")
-		else:
-			var input_direction = player.get_movement_input_direction()
-			if input_direction == Vector3.ZERO:
-				transition_to("idle")
+		if player.is_on_floor():
+			var input_dir = player.get_input_direction()
+			if input_dir.length() > 0:
+				return "MovingState"
 			else:
-				transition_to("moving")
-		return
-	
-	# Maintain dash velocity (ignore input during dash)
-	var dash_velocity = dash_direction * dash_speed
-	player.set_horizontal_velocity(dash_velocity)
-	
-	# Check if we've left the ground during dash
-	if not player.is_on_floor():
-		transition_to("falling")
-		return
+				return "IdleState"
+		else:
+			return "FallingState"
 
-func get_state_name() -> String:
-	return "dashing"
+	# Maintain dash velocity
+	player.velocity = dash_direction * player.config.dash_speed
+
+	player.move_and_slide()
+
+	return ""
+
+func exit() -> void:
+	dash_timer = 0.0
