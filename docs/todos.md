@@ -8,9 +8,10 @@
 - [x] wallruning state
 - [x] dashing state
 - [x] camera tilt
-- [ ] screen shake
-- [ ] moving objects through "interact"
+- [x] sfx for movement
 - [ ] equipping items
 - [ ] inventory
 - [ ] dialogic addon integration
+- [ ] moving objects through "interact"
 - [ ] hands model and animations
+- [ ] screen shake

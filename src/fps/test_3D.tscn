@@ -6,6 +6,8 @@
 [sub_resource type="Environment" id="Environment_r6u00"]
 background_mode = 1
 background_color = Color(0.48828018, 0.7672112, 1, 1)
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_alk16"]
 
